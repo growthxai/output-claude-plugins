@@ -6,8 +6,8 @@
     },
     "plugins": [
       {
-        "name": "workflow-development-tools",
-        "source": "./plugins/workflow-development-tools",
+        "name": "outputai",
+        "source": "./plugins/outputai",
         "description": "Workflow development tools",
         "version": "0.0.1",
         "author": {

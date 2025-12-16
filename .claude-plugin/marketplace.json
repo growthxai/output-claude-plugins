@@ -1,0 +1,18 @@
+{
+    "name": "output-ai-claude-plugins",
+    "owner": {
+      "name": "Output.ai",
+      "email": "support@output.ai"
+    },
+    "plugins": [
+      {
+        "name": "workflow-development-tools",
+        "source": "./plugins/workflow-development-tools",
+        "description": "Workflow development tools",
+        "version": "0.0.1",
+        "author": {
+          "name": "Output.ai"
+        }
+      }
+    ]
+  }

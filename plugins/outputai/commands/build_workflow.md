@@ -2,7 +2,7 @@
 argument-hint: [workflow-plan-file-path] [workflow-name] [workflow-directory]
 description: Workflow Implementation Command for Output SDK
 version: 0.0.1
-model: claude-opus
+model: opus
 ---
 
 Your task is to implement an Output.ai workflow based on a provided plan document.

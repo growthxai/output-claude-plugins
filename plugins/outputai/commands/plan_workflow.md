@@ -2,7 +2,7 @@
 argument-hint: [workflow-description-and-additional-instructions]
 description: Workflow Planning Command for Output SDK
 version: 0.0.1
-model: claude-opus
+model: opus
 ---
 
 Your task is to generate a comprehensive Output.ai workflow implementation plan in markdown format.

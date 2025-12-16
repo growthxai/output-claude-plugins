@@ -1,5 +1,5 @@
 {
-    "name": "output-ai-claude-plugins",
+    "name": "outputai",
     "owner": {
       "name": "Output.ai",
       "email": "support@output.ai"
@@ -8,7 +8,7 @@
       {
         "name": "outputai",
         "source": "./plugins/outputai",
-        "description": "Workflow development tools",
+        "description": "Output.ai Workflow Assistants",
         "version": "0.0.1",
         "author": {
           "name": "Output.ai"

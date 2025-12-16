@@ -1,0 +1,1 @@
+../../../.outputai/skills/output-error-try-catch/SKILL.md

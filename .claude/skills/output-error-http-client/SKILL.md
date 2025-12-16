@@ -1,0 +1,1 @@
+../../../.outputai/skills/output-error-http-client/SKILL.md

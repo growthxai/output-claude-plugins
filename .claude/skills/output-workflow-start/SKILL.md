@@ -1,0 +1,1 @@
+../../../.outputai/skills/output-workflow-start/SKILL.md

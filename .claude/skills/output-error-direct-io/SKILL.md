@@ -1,0 +1,1 @@
+../../../.outputai/skills/output-error-direct-io/SKILL.md

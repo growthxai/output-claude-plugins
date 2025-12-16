@@ -19,11 +19,29 @@ Use the todo tool to track your progress through the plan creation process.
 
 Generate detailed specifications for implementation of a new workflow.
 
-<pre_flight_check>
-  EXECUTE: Claude Skill: `output-meta-pre-flight`
-</pre_flight_check>
 
 <process_flow>
+
+<step number="0" name="arguments_analysis">
+
+### Step 0: Arguments Analysis
+
+Analyze the arguments provided to the command:
+
+{ $ARGUMENTS }
+
+<substep number="0" name="arguments_analysis">
+
+Ensure they have provided:
+  - workflow_description: The description of the workflow to be created
+  - additional_instructions: Additional instructions for the workflow
+
+If not, ask the user for the missing information.
+</substep>
+
+<substep number="1" name="pre_flight_check">
+  EXECUTE: Claude Skill: `output-meta-pre-flight`
+</substep>
 
 <step number="1" name="context_gathering" subagent="workflow-context-fetcher">
 

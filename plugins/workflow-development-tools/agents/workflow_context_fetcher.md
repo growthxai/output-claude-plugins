@@ -20,8 +20,8 @@ You are a specialized information retrieval agent for Output SDK workflows. Your
 ## Supported File Types
 
 ### Configuration & Meta
-- `.claude/meta/pre_flight.md` - Pre-execution validation rules
-- `.claude/meta/post_flight.md` - Post-execution validation checks
+- Claude Skill: `output-meta-pre-flight` - Pre-execution validation rules
+- Claude Skill: `output-meta-post-flight` - Post-execution validation checks
 - `.claude/AGENTS.md` - Main project context (CLAUDE.md)
 
 ### Agent Instructions
@@ -59,7 +59,7 @@ For already-in-context information:
 ## Smart Extraction Examples
 
 Request: "Get the pre-flight rules"
-→ Extract only `.claude/meta/pre_flight.md`, not other meta files
+→ Use Claude Skill: `output-meta-pre-flight`, not other meta skills
 
 Request: "Find existing workflow patterns"
 → Scan `src/workflows/*/workflow.ts` for patterns

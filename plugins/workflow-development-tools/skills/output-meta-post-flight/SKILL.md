@@ -1,7 +1,7 @@
 ---
-description: Post-Flight Validation for Output SDK Workflow Operations
-version: 1.0
-encoding: UTF-8
+name: output-meta-post-flight
+description: Post-flight validation for Output SDK workflow operations. Systematic verification of step completion, convention compliance, quality validation, and deliverable verification.
+allowed-tools: [Read]
 ---
 
 # Post-Flight Rules for Output SDK Workflows

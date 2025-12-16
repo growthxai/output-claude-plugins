@@ -15,8 +15,8 @@ Your workflow planning follows the structured process defined in `/plan_workflow
 
 ### Context Retrieval
 Use the `workflow-context-fetcher` subagent to retrieve documentation only if not already in context:
-- **Pre-Flight**: `.claude/meta/pre_flight.md` - validation rules and smart defaults
-- **Post-Flight**: `.claude/meta/post_flight.md` - completion checklist
+- **Pre-Flight**: Claude Skill: `output-meta-pre-flight` - validation rules and smart defaults
+- **Post-Flight**: Claude Skill: `output-meta-post-flight` - completion checklist
 - **Existing Patterns**: `src/workflows/*/workflow.ts` - similar workflow patterns
 
 Use the `workflow-prompt-writer` subagent for:

@@ -1,3 +1,9 @@
+---
+name: output-meta-project-context
+description: Comprehensive guide to Output.ai Framework for building durable, LLM-powered workflows orchestrated by Temporal. Covers project structure, workflow patterns, steps, LLM integration, HTTP clients, and CLI commands.
+allowed-tools: [Read]
+---
+
 # Output.ai Based Project Guide
 
 ## Overview
@@ -20,8 +26,8 @@ Each workflow is self-contained in a single folder with a predictable structure:
 
 ## Critical Conventions
 
-- **HTTP**: Never use axios → use `@output.ai/http` (traced, auto-retry)
-- **LLM**: Never call LLM APIs directly → use `@output.ai/llm`
+- **HTTP**: Never use axios - use `@output.ai/http` (traced, auto-retry)
+- **LLM**: Never call LLM APIs directly - use `@output.ai/llm`
 - **Workflows**: Must be deterministic - only call steps/evaluators, no direct I/O
 - **Steps**: All external operations (APIs, DBs, LLMs) must be wrapped in steps
 - **Schemas**: Use Zod (`z`) from `@output.ai/core` to define input/output schemas
@@ -111,7 +117,7 @@ Use `@output.ai/llm` for all LLM operations. Prompts are defined in `.prompt` fi
 ```yaml
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet
 temperature: 0.7
 maxTokens: 2000
 ---

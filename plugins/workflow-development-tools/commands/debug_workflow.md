@@ -2,7 +2,7 @@
 argument-hint: [problem-description-and-optional-workflow-id]
 description: Debug Output SDK workflow issues
 version: 0.0.1
-model: claude-opus-4-1
+model: claude-opus
 ---
 
 Your task is to systematically debug an Output SDK workflow issue in a local development environment.
@@ -18,7 +18,7 @@ Use the todo tool to track your progress through the debugging process.
 Follow a systematic approach to identify and resolve workflow execution issues: verify infrastructure, gather evidence, analyze traces, and apply targeted fixes.
 
 <pre_flight_check>
-  EXECUTE: @.claude/instructions/meta/pre_flight.md
+  EXECUTE: Claude Skill: `output-meta-pre-flight`
 </pre_flight_check>
 
 <process_flow>
@@ -188,7 +188,7 @@ npx output workflow result <workflowId>
 </process_flow>
 
 <post_flight_check>
-  EXECUTE: @.claude/instructions/meta/post_flight.md
+  EXECUTE: Claude Skill: `output-meta-post-flight`
 </post_flight_check>
 
 ---- START ----

@@ -2,7 +2,7 @@
 argument-hint: [workflow-description-and-additional-instructions]
 description: Workflow Planning Command for Output SDK
 version: 0.0.1
-model: claude-opus-4-1
+model: claude-opus
 ---
 
 Your task is to generate a comprehensive Output.ai workflow implementation plan in markdown format.
@@ -20,7 +20,7 @@ Use the todo tool to track your progress through the plan creation process.
 Generate detailed specifications for implementation of a new workflow.
 
 <pre_flight_check>
-  EXECUTE: @.claude/instructions/meta/pre_flight.md
+  EXECUTE: Claude Skill: `output-meta-pre-flight`
 </pre_flight_check>
 
 <process_flow>
@@ -177,7 +177,7 @@ export const finalStep = step( {
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet
 temperature: 0.7
 ---
 
@@ -243,7 +243,7 @@ Note that every implementation should start with running the cli command `npx ou
 Verify the plan is complete and ready for implementation.
 
 <post_flight_check>
-  EXECUTE: @.claude/instructions/meta/post_flight.md
+  EXECUTE: Claude Skill: `output-meta-post-flight`
 </post_flight_check>
 
 </step>
@@ -251,7 +251,7 @@ Verify the plan is complete and ready for implementation.
 </process_flow>
 
 <post_flight_check>
-  EXECUTE: @.claude/instructions/meta/post_flight.md
+  EXECUTE: Claude Skill: `output-meta-post-flight`
 </post_flight_check>
 
 ---- START ----

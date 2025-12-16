@@ -1,7 +1,7 @@
 ---
-description: Pre-Flight Checks for Output SDK Workflow Operations
-version: 1.0
-encoding: UTF-8
+name: output-meta-pre-flight
+description: Pre-flight validation checks for Output SDK workflow operations. Ensures conventions are followed, requirements are gathered, and quality gates are passed before workflow execution.
+allowed-tools: [Read]
 ---
 
 # Pre-Flight Rules for Output SDK Workflows
@@ -11,6 +11,9 @@ encoding: UTF-8
 - **CRITICAL**: For any step that specifies a subagent in the `subagent=""` XML attribute, you MUST use the specified subagent to perform the instructions for that step
 - Process all XML blocks sequentially and completely
 - Execute every numbered step in the process_flow EXACTLY as specified
+
+## Output SDK Knowledge Check
+Ensure you have a deep understanding of the Output SDK and its capabilities. If not, use Claude Skill: `output-meta-project-context` and read it carefully.
 
 ## Output SDK Conventions Check
 

@@ -2,7 +2,7 @@
 argument-hint: [workflow-plan-file-path] [workflow-name] [workflow-directory]
 description: Workflow Implementation Command for Output SDK
 version: 0.0.1
-model: claude-opus-4-1
+model: claude-opus
 ---
 
 Your task is to implement an Output.ai workflow based on a provided plan document.
@@ -20,7 +20,7 @@ Use the todo tool to track your progress through the implementation process.
 Implement the workflow described in the plan document, following Output SDK patterns and best practices.
 
 <pre_flight_check>
-  EXECUTE: @.claude/instructions/meta/pre_flight.md
+  EXECUTE: Claude Skill: `output-meta-pre-flight`
 </pre_flight_check>
 
 <process_flow>
@@ -163,7 +163,7 @@ export const llmStep = step( {
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet
 temperature: 0.7
 ---
 
@@ -266,7 +266,7 @@ Verify the implementation is complete and correct.
 Verify the implementation is ready for use.
 
 <post_flight_check>
-  EXECUTE: @.claude/instructions/meta/post_flight.md
+  EXECUTE: Claude Skill: `output-meta-post-flight`
 </post_flight_check>
 
 </step>
@@ -274,7 +274,7 @@ Verify the implementation is ready for use.
 </process_flow>
 
 <post_flight_check>
-  EXECUTE: @.claude/instructions/meta/post_flight.md
+  EXECUTE: Claude Skill: `output-meta-post-flight`
 </post_flight_check>
 
 ---- START ----

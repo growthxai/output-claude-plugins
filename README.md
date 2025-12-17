@@ -1,11 +1,12 @@
 # Output.ai Claude Plugins
 The repository contains Claude Plugins for Output.ai.
 
+Learn more about Output.ai at [output.ai](https://docs.output.ai).
+
 ## Installation
 ```bash
 claude
 > /plugin marketplace add growthxai/output-claude-plugins
-> /plugin install outputai
 > /plugin install outputai@outputai
 > /plugin install outputai-flow-migrator@outputai
 ```

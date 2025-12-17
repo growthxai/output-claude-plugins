@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-description-and-additional-instructions]
 description: Workflow Planning Command for Output SDK
-version: 0.0.1
+version: 0.0.2
 model: opus
 ---
 
@@ -19,6 +19,9 @@ Use the todo tool to track your progress through the plan creation process.
 
 Generate detailed specifications for implementation of a new workflow.
 
+## Output Path
+
+All plan outputs go to: `.outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md`
 
 <process_flow>
 
@@ -43,11 +46,14 @@ If not, ask the user for the missing information.
   EXECUTE: Claude Skill: `output-meta-pre-flight`
 </substep>
 
+</step>
+
 <step number="1" name="context_gathering" subagent="workflow-context-fetcher">
 
 ### Step 1: Context Gathering
 
 Take the time to gather all the context you need to create a comprehensive plan.
+
 1. Read any given files or links
 2. Find any related workflows in the project
 3. Read the projects documentation files
@@ -79,6 +85,7 @@ Clarify scope boundaries and technical considerations by asking numbered questio
   ELSE:
     PROCEED schema_definition
 </decision_tree>
+
 </step>
 
 <step number="3" name="workflow_design" subagent="workflow-planner">
@@ -101,16 +108,64 @@ Design the workflow with clear single purpose steps and sound orchestration logi
 
 </thought_process>
 
+<step_output>
+Output Draft Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
+
+</step>
+
 <step number="4" name="step_design" subagent="workflow-planner">
+
 ### Step 4: Step Design
 
 Design the individual steps called by the workflow with clear boundaries.
 
+<thought_process>
+  1. What is the name and description of each step?
+  2. What is the input schema for each step?
+  3. What is the output schema for each step?
+  4. What external services or APIs does each step use?
+  5. What error handling is needed for each step?
+  6. What retry policies should each step have?
+</thought_process>
+
+<step_output>
+Output Updated Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
+
 </step>
 
-<step number="5" name="prompt_engineering" subagent="workflow-prompt-writer">
+<step number="5" name="plan_review" subagent="workflow-quality">
 
-### Step 5: Prompt Engineering
+### Step 5: Plan Review
+
+Review the draft plan and make any necessary changes.
+
+<thought_process>
+  1. Does the plan make sense?
+  2. Are all the steps clear and concise?
+  3. Are all the dependencies identified?
+  4. Does the workflow follow Output SDK conventions?
+  5. Are error handling patterns appropriate?
+  6. Is the input/output schema design correct?
+</thought_process>
+
+<decision_tree>
+  IF changes_needed:
+    UPDATE draft_plan
+  ELSE:
+    PROCEED to step 6
+</decision_tree>
+
+<step_output>
+Output Reviewed Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
+
+</step>
+
+<step number="6" name="prompt_engineering" subagent="workflow-prompt-writer">
+
+### Step 6: Prompt Engineering
 
 If any of the steps use an LLM, design the prompts for the steps.
 
@@ -118,76 +173,37 @@ If any of the steps use an LLM, design the prompts for the steps.
   IF step_uses_llm:
     USE prompt_step_template
   ELSE:
-    SKIP to step 6
+    SKIP to step 7
 </decision_tree>
 
-<prompt_step_template>
-```typescript
-import { step, z } from '@output.ai/core';
-import { generateText } from '@output.ai/llm';
-
-export const aiSdkPrompt = step( {
-  name: 'aiSdkPrompt',
-  description: 'Generates a prompt',
-  inputSchema: z.object( {
-    topic: z.string()
-  } ),
-  outputSchema: z.string(),
-  fn: async ( { topic } ) => {
-    const response = await generateText( {
-      prompt: 'prompt@v1',
-      variables: { topic }
-    } );
-    return response;
-  }
-} );
-
-export const finalStep = step( {
-  name: 'finalStep',
-  outputSchema: z.boolean(),
-  fn: async () => true
-} );
-
-```
-</prompt_step_template>
-
-<prompt_template>
-```
----
-provider: anthropic
-model: claude-sonnet
-temperature: 0.7
----
-
-<assistant>
-You are a concise assistant.
-</assistant>
-
-<user>
-Explain about ""
-</user>
-
-```
-
-</prompt_template>
+<step_output>
+Output Updated Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
 
 </step>
 
-<step number="6" name="testing_strategy" subagent="workflow-debugger">
+<step number="7" name="testing_strategy" subagent="workflow-debugger">
 
-### Step 6: Testing Strategy
+### Step 7: Testing Strategy
 
 Design the testing strategy for the workflow.
+
 <thought_process>
   1. What unit tests do we need to write?
   2. How can I run the workflow?
   3. What cases do we need to validate?
+  4. What scenario files should be created?
 </thought_process>
+
+<step_output>
+Output Updated Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
 
 </step>
 
-<step number="7" name="generate_plan" subagent="workflow-planner">
-### Step 7: Generate Plan
+<step number="8" name="generate_plan" subagent="workflow-planner">
+
+### Step 8: Generate Plan
 
 Generate the complete plan in markdown format.
 
@@ -206,31 +222,37 @@ Note that every implementation should start with running the cli command `npx ou
     - Out of Scope
     - Workflow Design
     - Step Design
+    - Prompt Design
     - Testing Strategy
     - Implementation Phases
   </required_sections>
 </file_template>
 
+<step_output>
+Output Final Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
+
 </step>
 
-<step_number="8" name="post_flight_check">
+<step number="9" name="post_flight_check">
 
-
-### Step 8: Post-Flight Check
+### Step 9: Post-Flight Check
 
 Verify the plan is complete and ready for implementation.
 
-<post_flight_check>
+<substep number="0" name="post_flight_check">
   EXECUTE: Claude Skill: `output-meta-post-flight`
-</post_flight_check>
+</substep>
+
+Then instruct the user to:
+
+1. Review the plan
+2. Make any necessary changes
+3. Implement the workflow with the appropriate build command. e.g. `/outputai:build_workflow <plan_file_path> <workflow_name> <workflow_directory>`
 
 </step>
 
 </process_flow>
-
-<post_flight_check>
-  EXECUTE: Claude Skill: `output-meta-post-flight`
-</post_flight_check>
 
 ---- START ----
 

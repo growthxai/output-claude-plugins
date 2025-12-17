@@ -214,7 +214,7 @@ Then instruct the user to:
 
 1. Review the plan
 2. Make any necessary changes
-3. Implement the workflow with the appropriate build command
+3. Implement the workflow with the appropriate build command: e.g. `/outputai:build_workflow <plan_file_path> <workflow_name> <workflow_directory>`
 
 </step>
 

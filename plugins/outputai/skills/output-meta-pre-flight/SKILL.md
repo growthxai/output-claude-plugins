@@ -61,3 +61,12 @@ Before proceeding past pre-flight:
 3. Check for existing similar workflows to use as patterns
 4. Ensure Output SDK conventions are understood
 5. Validate that necessary subagents are available
+
+## Plan Creation Rules
+
+- All complex tasks should be tracked in a workflow plan file
+- These files should be created at .outputai/plans directory.
+- If `.outputai/plans` directory does not exist, create it.
+- Ensure the plan folder is named with the date, then the workflow name, then the task name. e.g. 2025_12_16_simple_sum_workflow_creation_plan/PLAN.md
+- Track the implementation progress of any plan in a TASK file in the plan folder. e.g. 2025_12_16_simple_sum_workflow_creation_plan/TASK.md
+- Use markdown todo list to track the progress of the plan. e.g

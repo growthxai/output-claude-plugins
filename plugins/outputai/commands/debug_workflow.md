@@ -2,7 +2,7 @@
 argument-hint: [problem-description-and-optional-workflow-id]
 description: Debug Output SDK workflow issues
 version: 0.0.1
-model: claude-opus
+model: opus
 ---
 
 Your task is to systematically debug an Output SDK workflow issue in a local development environment.

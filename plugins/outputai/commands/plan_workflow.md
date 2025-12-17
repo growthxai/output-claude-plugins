@@ -81,7 +81,7 @@ Clarify scope boundaries and technical considerations by asking numbered questio
 </decision_tree>
 </step>
 
-<step number="3" name="workflow_design" subagent="workflow-quality">
+<step number="3" name="workflow_design" subagent="workflow-planner">
 
 ### Step 3: Workflow Design
 
@@ -101,50 +101,10 @@ Design the workflow with clear single purpose steps and sound orchestration logi
 
 </thought_process>
 
-<workflow_template>
-```typescript
-import { workflow, z } from '@output.ai/core';
-import { sumValues } from './steps.js';
-
-const inputSchema = z.object( {
-  values: z.array( z.number() )
-} );
-
-const outputSchema = z.object( {
-  result: z.number()
-} );
-
-export default workflow( {
-  name: 'simple',
-  description: 'A simple workflow',
-  inputSchema,
-  outputSchema,
-  fn: async input => {
-    const result = await sumValues( input.values );
-    return { result };
-  }
-} );
-```
-</workflow_template>
-
-<step number="4" name="step_design" subagent="workflow-quality">
+<step number="4" name="step_design" subagent="workflow-planner">
 ### Step 4: Step Design
 
-Design the steps with clear boundaries.
-
-<step_template>
-```typescript
-import { step, z } from '@output.ai/core';
-
-export const sumValues = step( {
-  name: 'sumValues',
-  description: 'Sum all values',
-  inputSchema: z.array( z.number() ),
-  outputSchema: z.number(),
-  fn: async numbers => numbers.reduce( ( v, n ) => v + n, 0 )
-} );
-```
-</step_template>
+Design the individual steps called by the workflow with clear boundaries.
 
 </step>
 
@@ -213,7 +173,7 @@ Explain about ""
 
 </step>
 
-<step number="6" name="testing_strategy">
+<step number="6" name="testing_strategy" subagent="workflow-debugger">
 
 ### Step 6: Testing Strategy
 
@@ -226,7 +186,7 @@ Design the testing strategy for the workflow.
 
 </step>
 
-<step number="7" name="generate_plan">
+<step number="7" name="generate_plan" subagent="workflow-planner">
 ### Step 7: Generate Plan
 
 Generate the complete plan in markdown format.

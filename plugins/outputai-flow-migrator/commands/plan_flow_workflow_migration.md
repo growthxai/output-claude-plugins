@@ -152,7 +152,7 @@ Output Reviewed Plan: to .outputai/plans/migrate_flow_workflow_<workflow_name>.m
 
 </step>
 
-<step number="6" name="testing_strategy">
+<step number="6" name="testing_strategy" subagent="workflow-debugger">
 
 ### Step 6: Testing Strategy
 
@@ -166,7 +166,7 @@ Design the testing strategy for the workflow.
 
 </step>
 
-<step number="7" name="generate_plan">
+<step number="7" name="generate_plan" subagent="workflow-planner">
 
 ### Step 7: Finalize Plan
 

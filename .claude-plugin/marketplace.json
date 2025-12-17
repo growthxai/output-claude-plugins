@@ -13,6 +13,15 @@
         "author": {
           "name": "Output.ai"
         }
+      },
+      {
+        "name": "outputai-flow-migrator",
+        "source": "./plugins/outputai-flow-migrator",
+        "description": "Output.ai Flow SDK to Output SDK Migrator",
+        "version": "0.0.1",
+        "author": {
+          "name": "Output.ai"
+        }
       }
     ]
   }

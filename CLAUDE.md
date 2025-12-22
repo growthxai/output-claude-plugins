@@ -8,8 +8,6 @@ This repository contains Claude Code plugins for Output.ai workflow development.
 - **outputai**: Workflow development tools for planning, building, and debugging Output SDK workflows
 - **outputai-flow-migrator**: Migration tools for converting Flow SDK workflows to Output SDK
 
-The repository also includes an **agent-os** configuration that provides standardized development workflows and coding standards.
-
 ## Repository Structure
 
 ```
@@ -21,17 +19,12 @@ output-claude-plugins/
 │   │   ├── commands/                # Slash commands (build_workflow, debug_workflow, plan_workflow)
 │   │   └── skills/                  # Reusable skills for workflow operations
 │   └── outputai-flow-migrator/      # Flow SDK migration plugin
+│       ├── .claude-plugin/          # Plugin manifest
 │       ├── agents/                  # Migration-specific agents
 │       ├── commands/                # Migration commands
 │       └── skills/                  # Migration skills (conversion, analysis, validation)
-├── .claude/                         # Claude Code subagent configurations
-│   ├── agents/agent-os/             # Product planning and spec management agents
-│   └── commands/agent-os/           # Development workflow commands
-├── .claude-plugin/                  # Marketplace configuration
-│   └── marketplace.json             # Plugin registry for distribution
-└── agent-os/                        # Development standards and configuration
-    ├── config.yml                   # Agent-OS compilation settings
-    └── standards/                   # Coding standards (backend, frontend, global, testing)
+└── .claude-plugin/                  # Marketplace configuration
+    └── marketplace.json             # Plugin registry for distribution
 ```
 
 ## Plugin Architecture

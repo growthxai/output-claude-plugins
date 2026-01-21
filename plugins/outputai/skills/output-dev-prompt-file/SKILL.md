@@ -290,7 +290,7 @@ Focus on the most important concepts that would benefit from visual explanation.
 import { generateObject } from '@output.ai/llm';
 import { z } from '@output.ai/core';
 
-const response = await generateObject({
+const { result } = await generateObject({
   prompt: 'generateImageIdeas@v1',  // References prompts/generateImageIdeas@v1.prompt
   variables: {
     content: 'Solar panel technology explained...',
@@ -302,6 +302,7 @@ const response = await generateObject({
     ideas: z.array(z.string())
   })
 });
+// result contains { ideas: [...] }
 ```
 
 ### With generateText
@@ -309,13 +310,14 @@ const response = await generateObject({
 ```typescript
 import { generateText } from '@output.ai/llm';
 
-const response = await generateText({
+const { result } = await generateText({
   prompt: 'summarize@v1',
   variables: {
     content: 'Long article text...',
     maxLength: 200
   }
 });
+// result contains the generated text string
 ```
 
 ## Best Practices

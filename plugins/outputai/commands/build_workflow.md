@@ -149,11 +149,11 @@ export const llmStep = step( {
   } ),
   outputSchema: z.string(),
   fn: async ( { param } ) => {
-    const response = await generateText( {
+    const { result } = await generateText( {
       prompt: 'prompt_name@v1',
       variables: { param }
     } );
-    return response;
+    return result;
   }
 } );
 ```

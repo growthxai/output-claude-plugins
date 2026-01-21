@@ -199,7 +199,7 @@ export const analyzeContent = step({
   inputSchema: z.object({ content: z.string() }),
   outputSchema: z.object({ analysis: z.string() }),
   fn: async ({ content }) => {
-    const response = await generateObject({
+    const { result } = await generateObject({
       prompt: 'analyzeContent@v1',  // References prompts/analyzeContent@v1.prompt
       variables: {
         content
@@ -209,7 +209,7 @@ export const analyzeContent = step({
       })
     });
 
-    return { analysis: response.analysis };
+    return { analysis: result.analysis };
   }
 });
 ```
@@ -225,12 +225,12 @@ export const generateSummary = step({
   inputSchema: z.object({ content: z.string() }),
   outputSchema: z.object({ summary: z.string() }),
   fn: async ({ content }) => {
-    const response = await generateText({
+    const { result } = await generateText({
       prompt: 'summarize@v1',
       variables: { content }
     });
 
-    return { summary: response };
+    return { summary: result };
   }
 });
 ```

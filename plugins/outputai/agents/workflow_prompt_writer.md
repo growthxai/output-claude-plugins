@@ -545,7 +545,7 @@ src/workflows/{name}/
 Reference prompts by name and version in code:
 
 ```typescript
-const result = await generateText({
+const { result } = await generateText({
   prompt: 'analyze@v1',
   variables: { companyData, competitors }
 });

@@ -135,10 +135,11 @@ export const summarize = step({
   inputSchema: z.object({ content: z.string() }),
   outputSchema: z.string(),
   fn: async ({ content }) => {
-    return generateText({
+    const { result } = await generateText({
       prompt: 'summarize@v1',
       variables: { content }
     });
+    return result;
   }
 });
 
@@ -148,11 +149,12 @@ export const extractInfo = step({
   inputSchema: z.object({ text: z.string() }),
   outputSchema: z.object({ title: z.string(), summary: z.string() }),
   fn: async ({ text }) => {
-    return generateObject({
+    const { result } = await generateObject({
       prompt: 'extract@v1',
       variables: { text },
       schema: z.object({ title: z.string(), summary: z.string() })
     });
+    return result;
   }
 });
 ```

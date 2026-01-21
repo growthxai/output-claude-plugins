@@ -74,7 +74,7 @@ export const analyzeDocument = step( {
   fn: async ( input ) => {
     const { documentText, analysisType, maxLength } = input;
 
-    const result = await generateObject<AnalysisResult>( {
+    const { result } = await generateObject<AnalysisResult>( {
       prompt: 'analyzeDocument@v1',
       variables: {
         documentText,
@@ -153,7 +153,7 @@ Replace Flow SDK completion calls with Output SDK generators:
 const response = await completion( { model: 'gpt-4', messages: [...] } );
 
 // Output SDK
-const response = await generateText( {
+const { result } = await generateText( {
   prompt: 'myPrompt@v1',
   variables: { ... }
 } );
@@ -242,7 +242,7 @@ export const generateGreeting = step( {
   fn: async ( input ) => {
     const { user, style } = input;
 
-    const greeting = await generateText( {
+    const { result } = await generateText( {
       prompt: 'generateGreeting@v1',
       variables: {
         userName: user.name,
@@ -250,7 +250,7 @@ export const generateGreeting = step( {
       }
     } );
 
-    return greeting;
+    return result;
   }
 } );
 

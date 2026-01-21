@@ -126,13 +126,13 @@ Never call LLM APIs directly. Use `@output.ai/llm`:
 import { generateText, generateObject, generateArray, generateEnum } from '@output.ai/llm';
 
 // Text generation
-const text = await generateText({
+const { result: text } = await generateText({
   prompt: 'prompts/my_prompt@v1',
   variables: { topic: 'AI' }
 });
 
 // Structured output
-const data = await generateObject({
+const { result: data } = await generateObject({
   prompt: 'prompts/extract@v1',
   variables: { text },
   schema: z.object({ title: z.string(), summary: z.string() })

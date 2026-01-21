@@ -232,7 +232,7 @@ export const summarize = step( {
   inputSchema: z.object( { text: z.string() } ),
   outputSchema: z.string(),
   fn: async ( input ) => {
-    const result = await generateText( {
+    const { result } = await generateText( {
       prompt: 'summarize@v1',
       variables: {
         text: input.text
@@ -340,7 +340,7 @@ export const analyzeDocument = step( {
   inputSchema: AnalyzeDocumentInputSchema,
   outputSchema: AnalysisResultSchema,
   fn: async ( input ) => {
-    const result = await generateObject<AnalysisResult>( {
+    const { result } = await generateObject<AnalysisResult>( {
       prompt: 'analyzeDocument@v1',
       variables: {
         documentType: input.documentType,

@@ -537,6 +537,7 @@ fn: async (input) => {
 ## Related Skills
 
 - `output-dev-workflow-function` - Orchestrating steps in workflow.ts
+- `output-dev-evaluator-function` - Using steps in evaluator functions
 - `output-dev-types-file` - Defining step input/output schemas
 - `output-dev-http-client-create` - Creating shared HTTP clients
 - `output-dev-prompt-file` - Creating prompt files for LLM operations

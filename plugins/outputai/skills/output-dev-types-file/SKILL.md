@@ -262,5 +262,6 @@ export type User = z.infer<typeof UserSchema>;
 
 - `output-dev-workflow-function` - Using schemas in workflow definitions
 - `output-dev-step-function` - Using schemas in step definitions
+- `output-dev-evaluator-function` - Using schemas in evaluator definitions
 - `output-dev-folder-structure` - Where types.ts belongs in the project
 - `output-error-zod-import` - Troubleshooting schema import issues

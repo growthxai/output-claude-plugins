@@ -266,6 +266,7 @@ When reviewing workflow structure, verify:
 
 - `output-dev-workflow-function` - Writing workflow.ts files
 - `output-dev-step-function` - Writing step functions
+- `output-dev-evaluator-function` - Writing evaluators.ts files
 - `output-dev-types-file` - Creating Zod schemas
 - `output-dev-prompt-file` - Creating prompt files
 - `output-dev-scenario-file` - Creating test scenarios

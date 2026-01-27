@@ -471,5 +471,6 @@ Requirements:
 ## Related Skills
 
 - `output-dev-step-function` - Using prompts in step functions
+- `output-dev-evaluator-function` - Using prompts in evaluators
 - `output-dev-folder-structure` - Understanding prompts folder location
 - `output-dev-workflow-function` - Orchestrating LLM-powered steps

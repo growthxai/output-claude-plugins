@@ -316,6 +316,7 @@ fn: async (input) => {
 ## Related Skills
 
 - `output-dev-step-function` - Creating step functions that handle I/O
+- `output-dev-evaluator-function` - Using steps in evaluator functions
 - `output-dev-types-file` - Defining input/output schemas
 - `output-dev-folder-structure` - Where workflow.ts belongs
 - `output-error-nondeterminism` - Fixing determinism violations

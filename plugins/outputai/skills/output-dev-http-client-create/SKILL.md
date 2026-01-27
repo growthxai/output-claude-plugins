@@ -472,6 +472,7 @@ export interface ServiceResponse {
 ## Related Skills
 
 - `output-dev-step-function` - Using clients in step functions
+- `output-dev-evaluator-function` - Using clients in evaluators
 - `output-dev-folder-structure` - Understanding project layout
 - `output-error-http-client` - Troubleshooting HTTP issues
 - `output-error-try-catch` - Proper error handling patterns

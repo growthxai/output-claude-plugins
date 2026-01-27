@@ -77,6 +77,7 @@ Use these skills for detailed implementation patterns. Claude will auto-invoke t
 | `output-dev-types-file` | Designing Zod schemas, creating type definitions |
 | `output-dev-workflow-function` | Writing workflow.ts, understanding determinism requirements |
 | `output-dev-step-function` | Writing steps.ts, implementing I/O operations, error handling |
+| `output-dev-evaluator-function` | Writing evaluators.ts, implementing quality assessment, validation logic |
 | `output-dev-http-client-create` | Creating shared HTTP clients in src/clients/ |
 | `output-dev-prompt-file` | Designing .prompt files, Liquid.js templating, LLM configuration |
 | `output-dev-scenario-file` | Creating test scenarios, documenting expected inputs |

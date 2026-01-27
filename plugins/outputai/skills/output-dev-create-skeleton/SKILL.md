@@ -38,6 +38,27 @@ src/workflows/{workflow-name}/
 └── scenarios/       # Empty folder for test scenarios
 ```
 
+## Project Structure Overview
+
+The skeleton is created within the standard Output SDK project structure:
+
+```
+src/
+├── shared/                      # Shared code (create if needed)
+│   ├── clients/                 # API clients
+│   ├── utils/                   # Utility functions
+│   ├── services/                # Business logic services
+│   ├── steps/                   # Shared steps (optional)
+│   └── evaluators/              # Shared evaluators (optional)
+└── workflows/
+    └── {workflow-name}/         # Your new workflow
+        ├── workflow.ts
+        ├── steps.ts
+        ├── types.ts
+        ├── prompts/
+        └── scenarios/
+```
+
 ## Post-Generation Steps
 
 ### Step 1: Review Generated Files
@@ -187,6 +208,25 @@ scenarios/
 
 **Related Skill**: `output-dev-scenario-file`
 
+### Step 8: Set Up Shared Resources (If Needed)
+
+If your workflow needs shared clients, utilities, or services:
+
+```bash
+# Create shared directories if they don't exist
+mkdir -p src/shared/clients
+mkdir -p src/shared/utils
+mkdir -p src/shared/services
+```
+
+Import shared resources in your steps:
+```typescript
+import { GeminiService } from '../../shared/clients/gemini_client.js';
+import { formatDate } from '../../shared/utils/date_helpers.js';
+```
+
+**Related Skill**: `output-dev-http-client-create`
+
 ## Verification
 
 After customization, verify your workflow:
@@ -247,6 +287,21 @@ if (input.processImages) {
 }
 ```
 
+### Large Workflows - Folder-Based Organization
+
+For workflows with many steps, use folder-based organization:
+
+```
+src/workflows/{workflow-name}/
+├── workflow.ts
+├── steps/               # Folder instead of single file
+│   ├── fetch_data.ts
+│   ├── process.ts
+│   └── validate.ts
+├── types.ts
+└── ...
+```
+
 ## Verification Checklist
 
 After generating and customizing the skeleton:
@@ -256,9 +311,10 @@ After generating and customizing the skeleton:
 - [ ] All imports use `.js` extension
 - [ ] `z` is imported from `@output.ai/core`
 - [ ] Types are defined in `types.ts`
-- [ ] Steps are defined in `steps.ts`
+- [ ] Steps are defined in `steps.ts` or `steps/` folder
 - [ ] At least one test scenario exists
 - [ ] Workflow appears in `npx output workflow list`
+- [ ] Shared resources (if any) are in `src/shared/`
 
 ## Related Skills
 

@@ -36,6 +36,31 @@ Transforming Flow SDK code to Output SDK patterns.
 - Workflow class → `workflow()` function
 - Prompts → `.prompt` files with YAML frontmatter
 - Handlebars → Liquid.js template syntax
+- `src/clients/` → `src/shared/clients/` (new shared location)
+- Folder-based organization option for large workflows (`steps/` folder)
+
+### Target Structure
+
+```
+src/
+├── shared/                          # Shared code across workflows
+│   ├── clients/                     # API clients (migrate from src/clients/)
+│   ├── utils/                       # Utility functions
+│   └── services/                    # Business logic services
+└── workflows/
+    └── {workflow-name}/             # Individual workflow directory
+        ├── workflow.ts              # Workflow function (export default)
+        ├── steps.ts                 # OR steps/ folder for large workflows
+        ├── types.ts                 # Types + Zod schemas
+        ├── prompts/                 # Prompt files
+        └── scenarios/               # Test input files
+```
+
+### Activity Isolation Rules
+
+Steps CANNOT import other steps, evaluators, or workflows. They CAN import:
+- Local workflow files: `./utils.js`, `./types.js`
+- Shared code: `../../shared/clients/*.js`, `../../shared/utils/*.js`
 
 ### 3. Error Prevention
 

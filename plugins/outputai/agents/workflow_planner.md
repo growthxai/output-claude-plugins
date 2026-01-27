@@ -160,7 +160,7 @@ All imports MUST use `.js` extension:
 ```typescript
 import { stepName } from './steps.js';
 import { WorkflowInputSchema } from './types.js';
-import { GeminiService } from '#clients/gemini_client.js';
+import { GeminiService } from '../../shared/clients/gemini_client.js';
 ```
 
 ### Workflow Determinism
@@ -175,18 +175,45 @@ The workflow `fn` must be deterministic:
 ### File Locations
 
 ```
-src/workflows/{category}/{workflow-name}/
-├── workflow.ts          # Main workflow (default export)
-├── steps.ts             # Step functions (named exports)
-├── types.ts             # Zod schemas and types
-├── prompts/             # LLM prompt files
-│   └── {name}@v1.prompt
-└── scenarios/           # Test inputs
-    └── {name}.json
-
-src/clients/             # Shared HTTP clients (NOT in workflow folder)
-├── service_client.ts
+src/
+├── shared/                          # Shared code across workflows
+│   ├── clients/                     # API clients (using @output.ai/http)
+│   ├── utils/                       # Utility functions & helpers
+│   ├── services/                    # Business logic services
+│   ├── steps/                       # Shared steps (optional)
+│   └── evaluators/                  # Shared evaluators (optional)
+└── workflows/
+    └── {workflow-name}/             # Individual workflow directory
+        ├── workflow.ts              # Main workflow (default export)
+        ├── steps.ts                 # OR steps/ folder for large workflows
+        ├── evaluators.ts            # OR evaluators/ folder (optional)
+        ├── types.ts                 # Zod schemas and types
+        ├── prompts/                 # LLM prompt files
+        │   └── {name}@v1.prompt
+        └── scenarios/               # Test inputs
+            └── {name}.json
 ```
+
+### Component Location Rules
+
+| Component | Must be in |
+|-----------|------------|
+| `step()` calls | Files containing 'steps' in path |
+| `evaluator()` calls | Files containing 'evaluators' in path |
+| `workflow()` calls | `workflow.ts` file |
+
+### Activity Isolation Import Rules
+
+Steps and evaluators are Temporal activities with isolation constraints:
+
+**Steps CAN import from:**
+- Local workflow files: `./utils.js`, `./types.js`
+- Shared code: `../../shared/clients/*.js`, `../../shared/utils/*.js`
+
+**Steps CANNOT import:**
+- Other steps (activity isolation)
+- Evaluators
+- Workflow files
 
 ### CLI Commands
 

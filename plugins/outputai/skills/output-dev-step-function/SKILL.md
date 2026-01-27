@@ -18,6 +18,66 @@ This skill documents how to create step functions in `steps.ts` for Output SDK w
 - Handling errors with FatalError and ValidationError
 - Creating reusable step components
 
+## File Organization
+
+### Option 1: Flat File (Default)
+
+For smaller workflows, use a single `steps.ts` file:
+
+```
+src/workflows/{workflow-name}/
+├── workflow.ts
+├── steps.ts         # All steps in one file
+├── types.ts
+└── ...
+```
+
+### Option 2: Folder-Based (Large workflows)
+
+For larger workflows with many steps, use a `steps/` folder:
+
+```
+src/workflows/{workflow-name}/
+├── workflow.ts
+├── steps/           # Steps split into individual files
+│   ├── fetch_data.ts
+│   ├── process.ts
+│   └── validate.ts
+├── types.ts
+└── ...
+```
+
+## Component Location Rules
+
+**Important**: `step()` calls MUST be in files containing 'steps' in the path:
+- `src/workflows/my_workflow/steps.ts` ✓
+- `src/workflows/my_workflow/steps/fetch_data.ts` ✓
+- `src/shared/steps/common_steps.ts` ✓
+- `src/workflows/my_workflow/helpers.ts` ✗ (cannot contain step() calls)
+
+## Activity Isolation Constraints
+
+Steps are Temporal activities with strict import rules to ensure deterministic replay.
+
+### Steps CAN import from:
+- Local workflow files: `./utils.js`, `./types.js`, `./helpers.js`
+- Local subdirectories: `./clients/pokeapi.js`, `./lib/helpers.js`
+- Shared utilities: `../../shared/utils/*.js`
+- Shared clients: `../../shared/clients/*.js`
+- Shared services: `../../shared/services/*.js`
+
+### Steps CANNOT import:
+- Other step files (even shared steps - workflows import those)
+- Evaluator files
+- Workflow files
+
+**Example of WRONG imports:**
+```typescript
+// WRONG - steps cannot import other steps
+import { otherStep } from '../../shared/steps/other.js'; // ✗
+import { anotherStep } from './other_steps.js'; // ✗
+```
+
 ## Critical Import Patterns
 
 ### Core Imports
@@ -59,6 +119,7 @@ All imports MUST use `.js` extension:
 ```typescript
 // CORRECT
 import { InputSchema, OutputSchema } from './types.js';
+import { GeminiService } from '../../shared/clients/gemini_client.js';
 
 // WRONG - Missing .js extension
 import { InputSchema, OutputSchema } from './types';
@@ -308,7 +369,7 @@ import { step, z, FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
 import { generateObject } from '@output.ai/llm';
 
-import { GeminiImageService } from '#clients/gemini_client.js';
+import { GeminiImageService } from '../../shared/clients/gemini_client.js';
 import {
   GenerateImageIdeasInputSchema,
   GenerateImagesInputSchema,
@@ -470,6 +531,8 @@ fn: async (input) => {
 - [ ] FatalError used for non-retryable failures
 - [ ] ValidationError used for retryable failures
 - [ ] No bare try-catch blocks that swallow errors
+- [ ] Steps only import allowed dependencies (local files, shared code)
+- [ ] No imports of other steps, evaluators, or workflows
 
 ## Related Skills
 

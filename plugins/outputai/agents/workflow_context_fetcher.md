@@ -30,10 +30,19 @@ You are a specialized information retrieval agent for Output SDK workflows. Your
 
 ### Workflow Files
 - `src/workflows/*/workflow.ts` - Workflow definitions
-- `src/workflows/*/steps.ts` - Step implementations
-- `src/workflows/*/evaluators.ts` - Evaluator definitions
+- `src/workflows/*/steps.ts` - Step implementations (flat file)
+- `src/workflows/*/steps/*.ts` - Step implementations (folder-based)
+- `src/workflows/*/evaluators.ts` - Evaluator definitions (flat file)
+- `src/workflows/*/evaluators/*.ts` - Evaluator definitions (folder-based)
 - `src/workflows/*/prompts/*.prompt` - LLM prompt templates
 - `src/workflows/*/scenarios/*.json` - Test scenarios
+
+### Shared Code
+- `src/shared/clients/*.ts` - Shared API clients
+- `src/shared/utils/*.ts` - Shared utility functions
+- `src/shared/services/*.ts` - Shared business logic services
+- `src/shared/steps/*.ts` - Shared step definitions (optional)
+- `src/shared/evaluators/*.ts` - Shared evaluator definitions (optional)
 
 ## Workflow
 
@@ -68,7 +77,10 @@ Request: "Get retry policy defaults"
 → Use grep to find retry-related sections in pre_flight.md or AGENTS.md
 
 Request: "Find how existing steps use httpClient"
-→ Search `src/workflows/*/steps.ts` for httpClient patterns
+→ Search `src/workflows/*/steps.ts` and `src/workflows/*/steps/*.ts` for httpClient patterns
+
+Request: "Find shared clients"
+→ Scan `src/shared/clients/*.ts` for available API clients
 
 ## Important Constraints
 

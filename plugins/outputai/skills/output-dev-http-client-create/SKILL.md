@@ -1,6 +1,6 @@
 ---
 name: output-dev-http-client-create
-description: Create shared HTTP clients in src/clients/ for Output SDK workflows. Use when integrating external APIs, creating service wrappers, or standardizing HTTP operations.
+description: Create shared HTTP clients in src/shared/clients/ for Output SDK workflows. Use when integrating external APIs, creating service wrappers, or standardizing HTTP operations.
 allowed-tools: [Read, Write, Edit, Glob]
 ---
 
@@ -8,7 +8,7 @@ allowed-tools: [Read, Write, Edit, Glob]
 
 ## Overview
 
-This skill documents how to create shared HTTP clients for Output SDK workflows. Clients are stored in `src/clients/` and shared across all workflows to ensure consistent error handling, retry logic, and API integration patterns.
+This skill documents how to create shared HTTP clients for Output SDK workflows. Clients are stored in `src/shared/clients/` and shared across all workflows to ensure consistent error handling, retry logic, and API integration patterns.
 
 ## When to Use This Skill
 
@@ -19,10 +19,10 @@ This skill documents how to create shared HTTP clients for Output SDK workflows.
 
 ## Location Convention
 
-HTTP clients are stored in the central clients folder:
+HTTP clients are stored in the shared clients folder:
 
 ```
-src/clients/
+src/shared/clients/
 ├── gemini_client.ts     # Google Gemini API client
 ├── jina_client.ts       # Jina AI client
 ├── perplexity_client.ts # Perplexity API client
@@ -31,17 +31,28 @@ src/clients/
 
 **Important**: Clients are shared across ALL workflows. Do NOT create per-workflow HTTP clients.
 
+## Other Shared Code Locations
+
+```
+src/shared/
+├── clients/     # API clients (this skill)
+├── utils/       # Utility functions & helpers
+├── services/    # Business logic services
+├── steps/       # Shared step definitions (optional)
+└── evaluators/  # Shared evaluators (optional)
+```
+
 ## Import Pattern in Workflows
 
-Use the `#clients` path alias to import clients:
+Use relative imports from workflow files to shared clients:
 
 ```typescript
-// CORRECT - Use path alias
-import { GeminiImageService } from '#clients/gemini_client.js';
-import { parseResumeWithJina } from '#clients/jina_client.js';
+// CORRECT - Relative path from workflow steps.ts
+import { GeminiImageService } from '../../shared/clients/gemini_client.js';
+import { parseResumeWithJina } from '../../shared/clients/jina_client.js';
 
-// WRONG - Relative path from workflow
-import { GeminiImageService } from '../../../clients/gemini_client.js';
+// From shared steps (if used)
+import { JinaClient } from '../clients/jina_client.js';
 ```
 
 ## Critical Import Rules
@@ -447,7 +458,7 @@ export interface ServiceResponse {
 
 ## Verification Checklist
 
-- [ ] Client file located in `src/clients/` directory
+- [ ] Client file located in `src/shared/clients/` directory
 - [ ] File named `{service}_client.ts`
 - [ ] `httpClient` imported from `@output.ai/http` (not axios)
 - [ ] `FatalError` and `ValidationError` imported from `@output.ai/core`

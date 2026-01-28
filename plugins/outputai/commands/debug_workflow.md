@@ -1,7 +1,7 @@
 ---
 argument-hint: [problem-description-and-optional-workflow-id]
 description: Debug Output SDK workflow issues
-version: 0.1.0
+version: 0.1.1
 model: opus
 ---
 

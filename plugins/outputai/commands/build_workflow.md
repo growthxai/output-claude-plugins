@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-plan-file-path] [workflow-name] [workflow-directory]
 description: Workflow Implementation Command for Output SDK
-version: 0.1.0
+version: 0.1.1
 model: opus
 ---
 

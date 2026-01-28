@@ -90,7 +90,8 @@ import {
   z,
   EvaluationBooleanResult,
   EvaluationNumberResult,
-  EvaluationStringResult
+  EvaluationStringResult,
+  EvaluationFeedback
 } from '@output.ai/core';
 
 // WRONG - Never import z from zod
@@ -228,6 +229,9 @@ return new EvaluationStringResult({
 | `value` | `boolean`, `number`, or `string` | Yes | The evaluation result |
 | `confidence` | `number` (0.0-1.0) | Yes | Confidence in the evaluation |
 | `reasoning` | `string` | No | Explanation of the evaluation |
+| `name` | `string` | No | Name for this specific result (useful in dimensions) |
+| `feedback` | `EvaluationFeedback[]` | No | Array of feedback objects with issues and suggestions |
+| `dimensions` | `EvaluationResult[]` | No | Nested results for multi-dimensional evaluation |
 
 ## Simple Evaluator Examples
 
@@ -454,6 +458,81 @@ export const evaluateContentCategory = evaluator({
 });
 ```
 
+## EvaluationResult with Feedback
+
+Use the `feedback` field to provide actionable improvement suggestions alongside your evaluation result. Import `EvaluationFeedback` from `@output.ai/core` to create feedback objects.
+
+```typescript
+import { evaluator, z, EvaluationStringResult, EvaluationFeedback } from '@output.ai/core';
+
+export const evaluateWithFeedback = evaluator({
+  name: 'evaluate_with_feedback',
+  description: 'Evaluate content quality and provide actionable feedback',
+  inputSchema: z.string(),
+  fn: async (response) => {
+    const feedback = [];
+
+    if (response.length < 50) {
+      feedback.push(new EvaluationFeedback({
+        issue: 'Response is too short',
+        suggestion: 'Expand the response with more detail',
+        priority: 'medium'
+      }));
+    }
+
+    return new EvaluationStringResult({
+      value: feedback.length === 0 ? 'good' : 'needs_improvement',
+      confidence: 0.85,
+      feedback: feedback
+    });
+  }
+});
+```
+
+### EvaluationFeedback Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `issue` | `string` | The problem identified |
+| `suggestion` | `string` | Recommended fix |
+| `priority` | `string` | Priority level (e.g., `'low'`, `'medium'`, `'high'`) |
+
+## Multi-Dimensional Evaluation
+
+Use the `dimensions` field to nest `EvaluationResult` instances for sub-scores. Each dimension should use the `name` field to identify it.
+
+```typescript
+import { evaluator, z, EvaluationStringResult, EvaluationNumberResult } from '@output.ai/core';
+
+export const evaluateMultiDimensional = evaluator({
+  name: 'evaluate_multi_dimensional',
+  description: 'Evaluate content across multiple quality dimensions',
+  inputSchema: z.string(),
+  fn: async (response) => {
+    const coherenceScore = calculateCoherence(response);
+    const relevanceScore = calculateRelevance(response);
+    const overallScore = (coherenceScore + relevanceScore) / 2;
+
+    return new EvaluationStringResult({
+      value: overallScore > 0.7 ? 'high_quality' : 'low_quality',
+      confidence: 0.9,
+      dimensions: [
+        new EvaluationNumberResult({
+          value: coherenceScore,
+          confidence: 0.85,
+          name: 'coherence'
+        }),
+        new EvaluationNumberResult({
+          value: relevanceScore,
+          confidence: 0.88,
+          name: 'relevance'
+        })
+      ]
+    });
+  }
+});
+```
+
 ## Complete Example
 
 Based on a real workflow evaluator file:
@@ -605,6 +684,27 @@ name: 'validate'
 name: 'evaluate_stuff'
 ```
 
+### 6. Use Feedback for Actionable Improvements
+
+```typescript
+feedback: [
+  new EvaluationFeedback({
+    issue: 'Missing conclusion paragraph',
+    suggestion: 'Add a summary paragraph at the end',
+    priority: 'high'
+  })
+]
+```
+
+### 7. Use Dimensions for Multi-Criteria Evaluation
+
+```typescript
+dimensions: [
+  new EvaluationNumberResult({ value: 8, confidence: 0.9, name: 'coherence' }),
+  new EvaluationNumberResult({ value: 6, confidence: 0.85, name: 'relevance' })
+]
+```
+
 ## Verification Checklist
 
 - [ ] `evaluator`, `z`, result types imported from `@output.ai/core`
@@ -617,6 +717,9 @@ name: 'evaluate_stuff'
 - [ ] Confidence score between 0.0 and 1.0
 - [ ] Evaluators only import allowed dependencies (local files, shared code)
 - [ ] No imports of other evaluators, steps, or workflows
+- [ ] `EvaluationFeedback` imported from `@output.ai/core` when using feedback
+- [ ] Feedback objects include `issue`, `suggestion`, and `priority`
+- [ ] Dimensions use the `name` field to identify sub-evaluations
 
 ## Related Skills
 

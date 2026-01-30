@@ -232,6 +232,23 @@ Don't wrap step calls in try-catch. Let failures propagate for proper retry hand
 ### 5. Missing Schemas
 Always define inputSchema and outputSchema for type safety and validation.
 
+## Evaluator Quality Checks
+
+When reviewing evaluator implementations:
+
+- Evaluators use appropriate result types for their purpose:
+  - `EvaluationBooleanResult` for pass/fail decisions
+  - `EvaluationNumberResult` for scores and ratings
+  - `EvaluationStringResult` for categories and classifications
+- Confidence scores are meaningful:
+  - `1.0` for deterministic checks (length, pattern matching)
+  - `0.7-0.9` for heuristic/LLM-based assessments
+- Reasoning is provided for transparency
+- Evaluators only import from allowed sources (no other evaluators/steps/workflows)
+- Evaluators are in files containing 'evaluators' in the path
+- `EvaluationFeedback` used when actionable suggestions are needed
+- `dimensions` used when multiple quality aspects need separate measurement
+
 ## Example Interaction
 
 **User**: "My workflow is failing with a type error on the schema"

@@ -66,6 +66,16 @@ Designing LLM prompts for workflow steps.
 - Provider and model configuration
 - Few-shot examples and system instructions
 
+### 5. Evaluator Design
+
+Planning quality assessment and validation evaluators.
+
+- Result type selection (boolean, number, string)
+- Confidence scoring strategies
+- LLM-powered vs. rule-based evaluation
+- Multi-dimensional assessment with dimensions field
+- Feedback generation with EvaluationFeedback
+
 ## Common Skills
 
 Use these skills for detailed implementation patterns. Claude will auto-invoke the appropriate skill when context matches.
@@ -121,6 +131,14 @@ Delegate to these specialized agents when appropriate:
 - Plan HTTP client needs (shared vs. inline)
 - Design LLM operations and prompts
 - Plan error handling strategy (FatalError vs. ValidationError)
+
+### Phase 3.5: Evaluator Design
+
+- Determine if workflow needs quality assessment
+- Design evaluator functions for content validation
+- Plan result types (boolean/number/string)
+- Decide on simple logic vs. LLM-powered evaluation
+- Use `output-dev-evaluator-function` skill for patterns
 
 ### Phase 4: Orchestration Design
 

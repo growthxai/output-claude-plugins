@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-plan-file-path] [workflow-name] [workflow-directory]
 description: Workflow Implementation Command for Output SDK
-version: 0.1.1
+version: 0.1.2
 model: opus
 ---
 
@@ -119,6 +119,54 @@ export const stepName = step( {
 } );
 ```
 </step_template>
+
+</step>
+
+<step number="3.5" name="evaluators_implementation" subagent="workflow-quality">
+
+### Step 3.5: Evaluators Implementation (if needed)
+
+If the plan includes evaluator functions, implement them in `$3/evaluators.ts`.
+
+<decision_tree>
+  IF plan_includes_evaluators:
+    CREATE evaluators.ts
+    IMPLEMENT evaluator functions per plan
+  ELSE:
+    SKIP to step 4
+</decision_tree>
+
+<implementation_checklist>
+  - Import required dependencies (evaluator, z, result types from '@output.ai/core')
+  - Import generateObject from '@output.ai/llm' if using LLM-powered evaluators
+  - Implement each evaluator with proper schema validation
+  - Use appropriate result types (EvaluationBooleanResult, EvaluationNumberResult, EvaluationStringResult)
+  - Include confidence scores (0.0-1.0)
+  - Add reasoning for transparency
+  - All imports use .js extension
+</implementation_checklist>
+
+<evaluator_template>
+```typescript
+import { evaluator, z, EvaluationBooleanResult } from '@output.ai/core';
+
+export const evaluateName = evaluator({
+  name: 'evaluate_name',
+  description: 'Description from plan',
+  inputSchema: z.object({
+    // Define based on plan
+  }),
+  fn: async (input) => {
+    // Implement evaluation logic from plan
+    return new EvaluationBooleanResult({
+      value: true,
+      confidence: 0.95,
+      reasoning: 'Explanation of evaluation'
+    });
+  }
+});
+```
+</evaluator_template>
 
 </step>
 
@@ -251,6 +299,8 @@ Verify the implementation is complete and correct.
   - Workflow orchestration logic is correct
   - Error handling is in place
   - LLM prompts are created (if needed)
+  - Evaluators are implemented (if specified in plan)
+  - Evaluators use correct result types and confidence scores
   - README is updated with accurate information
   - Code follows Output SDK patterns
   - TypeScript types are properly defined

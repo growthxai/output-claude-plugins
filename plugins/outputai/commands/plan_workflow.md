@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-description-and-additional-instructions]
 description: Workflow Planning Command for Output SDK
-version: 0.1.1
+version: 0.1.2
 model: opus
 ---
 
@@ -135,6 +135,37 @@ Output Updated Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/P
 
 </step>
 
+<step number="4.5" name="evaluator_design" subagent="workflow-planner">
+
+### Step 4.5: Evaluator Design
+
+Determine if the workflow requires quality assessment, validation, or content evaluation.
+
+<decision_tree>
+  IF workflow_outputs_need_quality_scoring:
+    DESIGN evaluator functions
+  IF workflow_has_llm_generated_content:
+    CONSIDER content evaluation (factual accuracy, relevance, tone)
+  IF workflow_requires_validation_with_confidence:
+    DESIGN validation evaluators
+  ELSE:
+    SKIP evaluator design (note in plan: "No evaluators needed")
+</decision_tree>
+
+<thought_process>
+  1. Does the workflow produce content that needs quality assessment?
+  2. Are there LLM-generated outputs that need evaluation?
+  3. Would the workflow benefit from confidence-scored validation?
+  4. What evaluation result types are appropriate (boolean/number/string)?
+  5. Should evaluators use simple logic or LLM-powered assessment?
+</thought_process>
+
+<step_output>
+Output Updated Plan: to .outputai/plans/YYYY_MM_DD_<workflow_name>_<task_name>/PLAN.md
+</step_output>
+
+</step>
+
 <step number="5" name="plan_review" subagent="workflow-quality">
 
 ### Step 5: Plan Review
@@ -222,6 +253,7 @@ Note that every implementation should start with running the cli command `npx ou
     - Out of Scope
     - Workflow Design
     - Step Design
+    - Evaluator Design (if applicable)
     - Prompt Design
     - Testing Strategy
     - Implementation Phases

@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-plan-file-path] [workflow-name] [workflow-directory]
 description: Workflow Implementation Command for Output SDK
-version: 0.1.2
+version: 0.1.3
 model: opus
 ---
 
@@ -211,7 +211,7 @@ export const llmStep = step( {
 ```
 ---
 provider: anthropic
-model: claude-sonnet
+model: claude-sonnet-4
 temperature: 0.7
 ---
 

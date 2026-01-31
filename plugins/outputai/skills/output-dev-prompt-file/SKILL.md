@@ -52,7 +52,7 @@ The version suffix (`@v1`, `@v2`) allows for prompt versioning without breaking 
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 4096
 ---
@@ -72,8 +72,8 @@ User message with {{ variable }} placeholders.
 
 ```yaml
 ---
-provider: anthropic    # LLM provider: anthropic, openai, google
-model: claude-sonnet-4-20250514  # Model identifier
+provider: anthropic    # LLM provider: anthropic, openai, vertex
+model: claude-sonnet-4  # Model identifier
 ---
 ```
 
@@ -82,7 +82,7 @@ model: claude-sonnet-4-20250514  # Model identifier
 ```yaml
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.7       # 0.0 to 1.0, default varies by provider
 maxTokens: 4096        # Maximum output tokens
 providerOptions:       # Provider-specific options
@@ -99,7 +99,7 @@ providerOptions:       # Provider-specific options
 ```yaml
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 8192
 ---
@@ -110,7 +110,7 @@ maxTokens: 8192
 ```yaml
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 32000
 providerOptions:
@@ -125,18 +125,18 @@ providerOptions:
 ```yaml
 ---
 provider: openai
-model: gpt-4o
+model: gpt-5
 temperature: 0.7
 maxTokens: 4096
 ---
 ```
 
-#### Google (Gemini)
+#### Vertex (Gemini)
 
 ```yaml
 ---
-provider: google
-model: gemini-1.5-pro
+provider: vertex
+model: gemini-3-pro
 temperature: 0.7
 maxTokens: 8192
 ---
@@ -230,7 +230,7 @@ Based on a real prompt file (`generateImageIdeas@v1.prompt`):
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 32000
 providerOptions:
@@ -396,7 +396,7 @@ Additional context: {{ optionalField }}
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.3
 ---
 
@@ -417,7 +417,7 @@ Classify this content:
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.2
 ---
 
@@ -441,7 +441,7 @@ Text:
 ```
 ---
 provider: anthropic
-model: claude-sonnet-4-20250514
+model: claude-sonnet-4
 temperature: 0.8
 ---
 

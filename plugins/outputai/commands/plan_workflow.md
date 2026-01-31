@@ -1,7 +1,7 @@
 ---
 argument-hint: [workflow-description-and-additional-instructions]
 description: Workflow Planning Command for Output SDK
-version: 0.1.2
+version: 0.1.3
 model: opus
 ---
 

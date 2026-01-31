@@ -29,7 +29,7 @@ Prompt files (`.prompt`) consist of YAML frontmatter followed by message content
 ```yaml
 ---
 provider: anthropic
-model: claude-sonnet
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 2000
 ---
@@ -41,7 +41,7 @@ maxTokens: 2000
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `provider` | string | LLM provider: `anthropic`, `openai`, `azure` |
+| `provider` | string | LLM provider: `anthropic`, `openai`, `vertex`, `azure` |
 | `model` | string | Model identifier (provider-specific) |
 | `temperature` | number | Creativity (0.0-1.0, lower = more deterministic) |
 | `maxTokens` | number | Maximum response length |
@@ -49,14 +49,17 @@ maxTokens: 2000
 ### Recommended Models
 
 **Anthropic:**
-- `claude-sonnet` - Balanced performance (default)
-- `claude-opus` - Complex reasoning tasks
-- `claude-haiku` - Fast, simple tasks
+- `claude-sonnet-4` - Balanced performance (default)
+- `claude-opus-4-5` - Complex reasoning tasks
+- `claude-haiku-4-5` - Fast, simple tasks
 
 **OpenAI:**
-- `gpt-4o` - Balanced performance (default)
-- `gpt-4-turbo` - Complex tasks
-- `gpt-3.5-turbo` - Fast, simple tasks
+- `gpt-5` - Balanced performance (default)
+- `gpt-5-mini` - Fast, simple tasks
+
+**Vertex (Gemini):**
+- `gemini-3-pro` - Reasoning-first, agentic (default)
+- `gemini-3-flash` - Fast multimodal
 
 ## Role-Based Message Organization
 
@@ -521,9 +524,9 @@ Add comments at the top of complex prompts:
 #   - analysisDepth (string, optional): "summary" | "standard" | "comprehensive"
 #
 # Output: Structured competitive analysis with recommendations
-# Compatible with: claude-sonnet-4, gpt-4o
+# Compatible with: claude-sonnet-4, gpt-5
 provider: anthropic
-model: claude-sonnet
+model: claude-sonnet-4
 temperature: 0.7
 maxTokens: 4000
 ---

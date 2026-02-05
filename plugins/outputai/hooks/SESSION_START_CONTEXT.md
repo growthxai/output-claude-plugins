@@ -14,4 +14,4 @@ There will be a skill and/or agent for every task you will need to complete.
 
 ---
 
-Invoke `output-meta-project-context` skill now to load full context.
+Load the `output-meta-project-context` skill now to load full context.

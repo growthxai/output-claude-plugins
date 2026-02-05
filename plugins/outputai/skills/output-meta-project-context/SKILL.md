@@ -1,234 +1,373 @@
 ---
 name: output-meta-project-context
-description: Comprehensive guide to Output.ai Framework for building durable, LLM-powered workflows orchestrated by Temporal. Covers project structure, workflow patterns, steps, LLM integration, HTTP clients, and CLI commands.
+description: Comprehensive guide to Output.ai Framework for building durable, LLM-powered workflows orchestrated by Temporal. Covers project structure, workflow patterns, steps, LLM integration, HTTP clients, CLI commands, and complete inventory of available tools.
 allowed-tools: [Read]
 ---
 
-# Output.ai Based Project Guide
+# Output.ai Framework - Complete Project Context
 
-## Overview
+## What is Output.ai?
 
-This project uses Output Framework to build durable, LLM-powered workflows orchestrated by Temporal. Output Framework provides abstractions for creating reliable AI workflows with automatic retry, tracing, and error handling. Developers use it to build workflows like fact checkers, content generators, data extractors, research assistants, and multi-step AI agents.
+Output.ai provides infrastructure for building production-grade AI workflows: fact checkers, content generators, data extractors, research assistants, and multi-step agents. Built on Temporal, it guarantees **durable execution** - if execution fails mid-run, it resumes from the last successful step.
 
-### Project Overview
+## Core Philosophy
 
-Each workflow lives in its own folder under `src/workflows/` and follows a consistent structure. Workflows define the orchestration logic, calling steps to perform external operations like API calls, database queries, and LLM inference. The system automatically handles retries, timeouts, and distributed execution through Temporal.
+**Separation of orchestration from I/O:**
+- **Workflows** orchestrate execution (must be deterministic - no I/O)
+- **Steps/Evaluators** handle all I/O operations (HTTP, LLM, database calls)
 
-### Key Concepts
+This separation enables automatic retries, resumption, and debugging.
 
-#### Built on Top of Temporal
+## Component Taxonomy
 
-Temporal provides durable execution guarantees - if a workflow fails mid-execution, it resumes from the last successful step rather than restarting. Output Framework wraps Temporal's workflow and activity primitives with higher-level abstractions (`workflow`, `step`, `evaluator`) that enforce best practices and provide automatic tracing.
-
-#### Single Folder Project Structure
-
-Each workflow is self-contained in a single folder with a predictable structure: `workflow.ts` contains the deterministic orchestration logic, `steps.ts` contains I/O operations (API calls, LLM inference), `evaluators.ts` contains analysis logic returning confidence-scored results, and `prompts/*.prompt` files define LLM prompts using Liquid.js templates with YAML frontmatter for model configuration.
-
-## Critical Conventions
-
-- **HTTP**: Never use axios - use `@output.ai/http` (traced, auto-retry)
-- **LLM**: Never call LLM APIs directly - use `@output.ai/llm`
-- **Workflows**: Must be deterministic - only call steps/evaluators, no direct I/O
-- **Steps**: All external operations (APIs, DBs, LLMs) must be wrapped in steps
-- **Schemas**: Use Zod (`z`) from `@output.ai/core` to define input/output schemas
+| Component | Purpose | Key Rule |
+|-----------|---------|----------|
+| **Workflow** | Orchestrates step execution | Must be deterministic (no I/O, no Date.now(), no Math.random()) |
+| **Step** | Handles all I/O operations | Where HTTP, LLM, DB calls happen |
+| **Evaluator** | Quality assessment | Returns confidence-scored results for validation loops |
+| **Scenario** | Test input data | JSON files matching workflow's inputSchema |
+| **Prompt** | LLM templates | Liquid.js templating with YAML frontmatter config |
 
 ## Project Structure
 
 ```
-src/workflows/{name}/
-  workflow.ts          # Orchestration logic (deterministic)
-  steps.ts             # I/O operations (APIs, LLM, DB)
-  evaluators.ts        # Analysis steps returning EvaluationResult
-  prompts/*.prompt             # LLM prompts (name@v1.prompt)
-  scenarios/*.json             # Test scenarios
+src/
+├── shared/                      # Shared code across workflows
+│   ├── clients/                 # API clients (e.g., jina.ts, stripe.ts)
+│   └── utils/                   # Utility functions (e.g., string.ts)
+└── workflows/                   # Workflow definitions
+    └── {workflow_name}/
+        ├── workflow.ts          # Orchestration logic (deterministic)
+        ├── steps.ts             # I/O operations
+        ├── types.ts             # Zod schemas (input, output, internal)
+        ├── evaluators.ts        # Quality checks (optional)
+        ├── utils.ts             # Local utilities (optional)
+        ├── prompts/             # LLM templates (optional)
+        │   └── generate@v1.prompt
+        └── scenarios/           # Test inputs (optional)
+            └── happy_path.json
 ```
 
-## Commands
+## Code Reuse Rules
+
+**Shared directory** (`src/shared/`):
+- `shared/clients/` - API clients using `@output.ai/http` for external services
+- `shared/utils/` - Helper functions and utilities
+
+**Allowed imports:**
+- Workflows/steps can import from `../../shared/clients/*.js` and `../../shared/utils/*.js`
+- Workflows/steps can import from local files (`./types.js`, `./utils.js`)
+
+**Forbidden:**
+- Importing from sibling workflow folders (`../other_workflow/steps.js`)
+- Steps importing other steps (activity isolation requirement)
+
+## Critical Rules
+
+| Rule | Correct | Incorrect |
+|------|---------|-----------|
+| Zod import | `import { z } from '@output.ai/core'` | `import { z } from 'zod'` |
+| HTTP client | `import { httpClient } from '@output.ai/http'` | `import axios from 'axios'` |
+| LLM calls | `import { generateText } from '@output.ai/llm'` | Direct provider SDK |
+| ES imports | `import { fn } from './file.js'` | `import { fn } from './file'` |
+| Workflow I/O | Call steps for any I/O | Direct fetch/http in workflow |
+
+**Determinism violations (never in workflows):**
+- `Date.now()`, `new Date()`
+- `Math.random()`, `crypto.randomUUID()`
+- Direct HTTP/fetch calls
+- File system operations
+- Environment variable reads
+
+---
+
+## Available Tools Inventory
+
+### Agents (5)
+
+| Agent | Purpose |
+|-------|---------|
+| `workflow-planner` | Designs workflow architecture, creates implementation blueprints |
+| `workflow-debugger` | Analyzes workflow execution traces, identifies issues |
+| `workflow-quality` | Reviews code quality, validates implementations |
+| `workflow-prompt-writer` | Creates and optimizes LLM prompt templates |
+| `workflow-context-fetcher` | Gathers documentation and existing patterns |
+
+### Commands (3)
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `/outputai:plan_workflow` | Plan workflow architecture | **ALWAYS FIRST** - creates implementation blueprint |
+| `/outputai:build_workflow` | Build/implement workflows | After planning, or for modifications |
+| `/outputai:debug_workflow` | Debug workflow issues | When workflows fail or behave unexpectedly |
+
+### Skills (27)
+
+#### Workflow Operations (5)
+| Skill | Purpose |
+|-------|---------|
+| `output-workflow-run` | Synchronous workflow execution (waits for result) |
+| `output-workflow-start` | Asynchronous workflow execution (returns ID) |
+| `output-workflow-list` | List available workflows |
+| `output-workflow-status` | Check async workflow status |
+| `output-workflow-result` | Get async workflow result |
+
+#### Monitoring & Debugging (4)
+| Skill | Purpose |
+|-------|---------|
+| `output-workflow-stop` | Stop running workflow |
+| `output-workflow-trace` | Trace workflow execution |
+| `output-workflow-runs-list` | List workflow run history |
+| `output-services-check` | Verify Output services status |
+
+#### Error Diagnosis (6)
+| Skill | Catches |
+|-------|---------|
+| `output-error-zod-import` | Wrong zod import source |
+| `output-error-nondeterminism` | Date.now, Math.random in workflows |
+| `output-error-try-catch` | Missing error handling in steps |
+| `output-error-missing-schemas` | Incomplete Zod schema exports |
+| `output-error-direct-io` | I/O operations in workflow files |
+| `output-error-http-client` | Using axios instead of @output.ai/http |
+
+#### Meta/Lifecycle (3)
+| Skill | Purpose |
+|-------|---------|
+| `output-meta-pre-flight` | Pre-operation validation checks |
+| `output-meta-post-flight` | Post-operation verification |
+| `output-meta-project-context` | Load full project context (this skill) |
+
+#### Development (9)
+| Skill | Purpose |
+|-------|---------|
+| `output-dev-folder-structure` | Project and workflow directory layout |
+| `output-dev-workflow-function` | Writing deterministic workflow files |
+| `output-dev-step-function` | Writing step functions for I/O |
+| `output-dev-types-file` | Zod schema definitions |
+| `output-dev-evaluator-function` | Quality assessment functions |
+| `output-dev-prompt-file` | LLM prompt templates with Liquid.js |
+| `output-dev-scenario-file` | Test input JSON files |
+| `output-dev-http-client-create` | Shared HTTP API client patterns |
+| `output-dev-create-skeleton` | Generate workflow skeleton |
+
+---
+
+## CLI Quick Reference
 
 ```bash
-npx output dev                                      # Start dev (Temporal:8080, API:3001)
-npx output workflow list                            # List workflows
+# Development
+npx output dev                              # Start dev environment
 
-# Sync execution (waits for result)
-npx output workflow run <name> --input <JSON|JSON_FILE>      # Execute and wait
+# List & inspect
+npx output workflow list                    # List available workflows
 
-# Async execution
-npx output workflow start <name> --input <JSON|JSON_FILE>    # Start workflow, returns ID
-npx output workflow status <workflowId>             # Check execution status
-npx output workflow result <workflowId>             # Get result when complete
-npx output workflow stop <workflowId>               # Cancel running workflow
+# Execute
+npx output workflow run <name> --input '{}'  # Run synchronously (waits)
+npx output workflow start <name> --input '{}' # Run async (returns ID)
+npx output workflow status <id>              # Check async status
+npx output workflow result <id>              # Get async result
+
+# Debug
+npx output workflow debug <id>               # Debug failed workflow
+npx output workflow debug <id> --format json # Machine-readable output
 ```
 
-## Workflow Pattern
+---
 
-Workflows orchestrate steps. They must be deterministic (no direct I/O).
+## Naming Conventions
 
+| Element | Convention | Example |
+|---------|------------|---------|
+| Workflow folder | snake_case | `fact_checker/` |
+| Workflow name | snake_case | `name: 'fact_checker'` |
+| Step functions | camelCase | `fetchArticle()`, `analyzeContent()` |
+| Schema names | PascalCase | `InputSchema`, `ArticleData` |
+| Prompt files | snake_case@version.prompt | `analyze_claim@v1.prompt` |
+| Scenario files | snake_case.json | `happy_path.json` |
+
+---
+
+## Common Patterns
+
+### Workflow Pattern
 ```typescript
 import { workflow, z } from '@output.ai/core';
-import { processData, callApi } from './steps.js';
+import { fetchData, processData } from './steps.js';
+
+export const inputSchema = z.object({ url: z.string().url() });
+export const outputSchema = z.object({ result: z.string() });
 
 export default workflow({
-  name: 'my-workflow',
-  description: 'What this workflow does',
-  inputSchema: z.object({ query: z.string() }),
-  outputSchema: z.object({ result: z.string() }),
+  name: 'my_workflow',
+  description: 'Processes data from URL',
+  inputSchema,
+  outputSchema,
   fn: async (input) => {
-    const data = await processData(input);
-    const result = await callApi(data);
+    const data = await fetchData(input.url);
+    const result = await processData(data);
     return { result };
   }
 });
 ```
 
-**Allowed imports**: steps.ts, evaluators.ts, shared_steps.ts, types.ts, consts.ts, utils.ts
+See `output-dev-workflow-function` for comprehensive patterns.
 
-**Forbidden in workflows**: Direct API calls, Math.random(), Date.now(), dynamic imports
-
-## Step Pattern
-
-Steps contain all I/O operations. They are automatically retried on failure.
-
+### Step Pattern
 ```typescript
 import { step, z } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
 
-const client = httpClient({ prefixUrl: 'https://api.example.com' });
-
-export const fetchData = step({
-  name: 'fetchData',
-  description: 'Fetch data from external API',
-  inputSchema: z.object({ id: z.string() }),
-  outputSchema: z.object({ data: z.any() }),
-  fn: async ({ id }) => {
-    const response = await client.get(`items/${id}`).json();
-    return { data: response };
-  },
-  options: {
-    retry: { maximumAttempts: 3 }
+export const fetchData = step(
+  { name: 'fetchData', inputSchema: z.string(), outputSchema: z.any() },
+  async (url) => {
+    const client = httpClient({ prefixUrl: url });
+    const response = await client.get('');
+    return response.json();
   }
-});
+);
 ```
 
-## LLM Pattern
+See `output-dev-step-function` for comprehensive patterns.
 
-Use `@output.ai/llm` for all LLM operations. Prompts are defined in `.prompt` files.
+### HTTP Client Pattern (Shared)
 
-**Prompt file** (`summarize@v1.prompt`):
-```yaml
----
-provider: anthropic
-model: claude-sonnet
-temperature: 0.7
-maxTokens: 2000
----
-<system>You are a helpful assistant.</system>
-<user>Summarize: {{ content }}</user>
-```
-
-**Step using prompt**:
-```typescript
-import { step, z } from '@output.ai/core';
-import { generateText, generateObject } from '@output.ai/llm';
-
-export const summarize = step({
-  name: 'summarize',
-  inputSchema: z.object({ content: z.string() }),
-  outputSchema: z.string(),
-  fn: async ({ content }) => {
-    const { result } = await generateText({
-      prompt: 'summarize@v1',
-      variables: { content }
-    });
-    return result;
-  }
-});
-
-// For structured output
-export const extractInfo = step({
-  name: 'extractInfo',
-  inputSchema: z.object({ text: z.string() }),
-  outputSchema: z.object({ title: z.string(), summary: z.string() }),
-  fn: async ({ text }) => {
-    const { result } = await generateObject({
-      prompt: 'extract@v1',
-      variables: { text },
-      schema: z.object({ title: z.string(), summary: z.string() })
-    });
-    return result;
-  }
-});
-```
-
-**Available functions**: `generateText`, `generateObject`, `generateArray`, `generateEnum`
-
-**Providers**: anthropic, openai, azure
-
-## HTTP Pattern
-
-Use `@output.ai/http` for traced HTTP requests with automatic retry.
+Clients live in `src/shared/clients/` and are shared across all workflows.
 
 ```typescript
+// src/shared/clients/example.ts
+import { FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
+
+const API_KEY = process.env.EXAMPLE_API_KEY || '';
 
 const client = httpClient({
   prefixUrl: 'https://api.example.com',
+  headers: { Authorization: `Bearer ${API_KEY}` },
   timeout: 30000,
-  retry: { limit: 3 }
+  retry: { limit: 3, statusCodes: [408, 429, 500, 502, 503, 504] }
 });
 
-// In a step:
-const data = await client.get('endpoint').json();
-const result = await client.post('endpoint', { json: payload }).json();
+export async function fetchFromExample(query: string): Promise<ExampleResponse> {
+  if (!API_KEY) throw new FatalError('EXAMPLE_API_KEY not set');
+
+  try {
+    const response = await client.get('endpoint', { searchParams: { q: query } });
+    return response.json();
+  } catch (error: unknown) {
+    const err = error as { status?: number; message?: string };
+    if (err.status === 401 || err.status === 403) {
+      throw new FatalError(`Auth failed: ${err.message}`);
+    }
+    throw new ValidationError(`Request failed: ${err.message}`);
+  }
+}
 ```
 
-## Evaluator Pattern
+**Error type guidelines:**
+- `FatalError`: 401, 403, 404 (won't succeed on retry)
+- `ValidationError`: 429, 5xx (may succeed on retry)
 
-Evaluators analyze data and return confidence-scored results.
+See `output-dev-http-client-create` for comprehensive patterns.
+
+### Evaluator Pattern
+
+Evaluators return confidence-scored results. Three result types available:
 
 ```typescript
-import { evaluator, EvaluationStringResult } from '@output.ai/core';
+import { evaluator, z, EvaluationBooleanResult, EvaluationNumberResult, EvaluationStringResult } from '@output.ai/core';
 
-export const judgeQuality = evaluator({
-  name: 'judgeQuality',
-  inputSchema: z.string(),
-  fn: async (content) => {
-    // Analysis logic
-    return new EvaluationStringResult({
-      value: 'good',
-      confidence: 0.95
+// Boolean evaluator - pass/fail checks
+export const evaluateCompleteness = evaluator({
+  name: 'evaluate_completeness',
+  description: 'Check if content meets minimum length',
+  inputSchema: z.object({ content: z.string(), minLength: z.number() }),
+  fn: async ({ content, minLength }) => {
+    return new EvaluationBooleanResult({
+      value: content.length >= minLength,
+      confidence: 1.0,
+      reasoning: `Content has ${content.length} chars (min: ${minLength})`
     });
   }
 });
 ```
 
-## Error Handling
+See `output-dev-evaluator-function` for comprehensive patterns.
 
-```typescript
-import { FatalError, ValidationError } from '@output.ai/core';
+### Prompt File Pattern
 
-// Non-retryable error (workflow fails immediately)
-throw new FatalError('Critical failure - do not retry');
+Prompts use YAML frontmatter + Liquid.js templating. Location: `src/workflows/{name}/prompts/`
 
-// Validation error (input/output schema failure)
-throw new ValidationError('Invalid input format');
+```
+---
+provider: anthropic
+model: claude-sonnet-4
+temperature: 0.7
+maxTokens: 4096
+---
+
+<system>
+You are an expert content analyzer.
+
+{% if context %}
+Additional context: {{ context }}
+{% endif %}
+</system>
+
+<user>
+Analyze the following content:
+
+<content>
+{{ content }}
+</content>
+
+Provide {{ numberOfPoints | default: 3 }} key insights.
+</user>
 ```
 
-## Sub-Agents
+**Using in steps:**
+```typescript
+import { generateObject, generateText } from '@output.ai/llm';
+import { z } from '@output.ai/core';
 
-For workflow planning and implementation:
-- workflow-planner: `.claude/agents/workflow_planner.md` - Workflow architecture specialist
-- workflow-quality: `.claude/agents/workflow_quality.md` - Workflow quality and best practices specialist
-- workflow-prompt-writer: `.claude/agents/workflow_prompt_writer.md` - Prompt file creation and review specialist
-- workflow-context-fetcher: `.claude/agents/workflow_context_fetcher.md` - Efficient context retrieval (used by other agents)
-- workflow-debugger: `.claude/agents/workflow_debugger.md` - Workflow debugging specialist
+// Structured output
+const { result } = await generateObject({
+  prompt: 'analyze@v1',
+  variables: { content: 'Article text...', numberOfPoints: 5 },
+  schema: z.object({ insights: z.array(z.string()) })
+});
 
-## Commands
+// Text output
+const { result } = await generateText({
+  prompt: 'summarize@v1',
+  variables: { content: 'Article text...' }
+});
+```
 
-For workflow planning and implementation:
-- /plan_workflow: `.claude/commands/plan_workflow.md` - Planning command
-- /build_workflow: `.claude/commands/build_workflow.md` - Implementation command
-- /debug_workflow: `.claude/commands/debug_workflow.md` - Debugging command
+**Provider options:**
+| Provider | Model Examples |
+|----------|----------------|
+| `anthropic` | `claude-sonnet-4`, `claude-opus-4` |
+| `openai` | `gpt-4o`, `gpt-4o-mini` |
+| `vertex` | `gemini-2.0-flash`, `gemini-2.5-pro` |
 
-## Configuration
+See `output-dev-prompt-file` for comprehensive patterns.
 
-See `.env` file for required environment variables (API keys, etc.)
+---
+
+## Practical Tips
+
+### Docker & Services
+- **Restart worker after adding workflows**: `docker restart <project>-worker-1`
+- **View worker logs**: `docker logs -f output-worker-1`
+- **Check services**: Use `output-services-check` skill
+
+### Payload Limits
+- Temporal: ~2MB per workflow input/output
+- gRPC: ~4MB maximum
+- For larger data, use file storage and pass references
+
+### Debugging Workflow Failures
+1. Get the workflow ID from error output
+2. Run `npx output workflow debug <id> --format json`
+3. Look for: failed step name, error message, input that caused failure
+4. Check if issue is determinism, schema validation, or external API

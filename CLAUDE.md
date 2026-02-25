@@ -69,6 +69,25 @@ import { stepName } from './steps.js';
 ### HTTP and LLM Clients
 - Never use `axios` directly - use `@output.ai/http` wrapper
 - Never make direct LLM calls - use `@output.ai/llm` wrapper with `generateText`
+- For structured LLM output, use `generateText` with `Output.object()`:
+  ```typescript
+  import { generateText, Output } from '@output.ai/llm';
+  const { output } = await generateText({
+    prompt: 'analyze@v1',
+    variables: { content },
+    output: Output.object({ schema: z.object({ ... }) })
+  });
+  ```
+
+### Schema Constraints for LLM Structured Output
+- Schemas passed to `Output.object()` must NOT use `.min()/.max()` on `z.number()` - Anthropic rejects these. Use `.describe()` instead.
+- Workflow/step `inputSchema`/`outputSchema` CAN use `.min()/.max()` since they are Zod-only runtime validation.
+
+| Context | `.min()/.max()` | `.describe()` |
+|---------|:-:|:-:|
+| Schema in `Output.object()` | No | Yes |
+| `inputSchema`/`outputSchema` on workflows/steps | OK | Optional |
+| `outputSchema` on evaluators | OK | Optional |
 
 ### Workflow Structure
 ```typescript

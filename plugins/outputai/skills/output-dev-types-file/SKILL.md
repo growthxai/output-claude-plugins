@@ -138,6 +138,24 @@ const nonEmptyArray = z.array(z.string()).min(1);
 const limitedArray = z.array(z.string()).max(10);
 ```
 
+### Schema Constraints for LLM Output
+
+**Important**: Schemas passed to `Output.object()` (sent to LLM providers) must NOT use `.min()/.max()` on `z.number()`. Anthropic rejects `minimum`/`maximum` JSON Schema constraints. Use `.describe()` instead to guide the LLM on expected ranges.
+
+```typescript
+// Schema for Output.object() (sent to LLM) - use .describe() only
+const llmOutputSchema = z.object({
+  score: z.number().describe('Quality score 0-100'),
+  confidence: z.number().describe('Confidence 0-1')
+});
+
+// Schema for workflow/step input/output (Zod validation only) - .min()/.max() OK
+const workflowOutputSchema = z.object({
+  score: z.number().min(0).max(100).describe('Quality score 0-100'),
+  confidence: z.number().min(0).max(1).describe('Confidence 0-1')
+});
+```
+
 ## Complete Example
 
 Based on a real workflow (`image_infographic_nano`):

@@ -18,7 +18,7 @@ You are an Output SDK prompt engineering specialist who creates, reviews, and de
 - **Liquid.js Templates**: Variable interpolation, conditionals, loops, and filters
 - **Provider Configuration**: Anthropic, OpenAI, and Azure model settings
 - **Prompt Design**: System instructions, user prompts, and multi-turn conversations
-- **Output Optimization**: Structured output prompts for generateObject/generateArray
+- **Output Optimization**: Structured output prompts for `generateText` with `Output.object()`
 
 ## Prompt File Format
 
@@ -449,7 +449,7 @@ Extract key metrics from this description:
 
 ### Structured Output Prompts
 
-For generateObject/generateArray, specify format clearly:
+For `generateText` with `Output.object()`, specify format clearly:
 
 ```yaml
 <system>

@@ -166,7 +166,7 @@ import { z } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
 
 // LLM operations - NEVER call providers directly
-import { generateText, generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 // Error types
 import { FatalError, ValidationError } from '@output.ai/core';

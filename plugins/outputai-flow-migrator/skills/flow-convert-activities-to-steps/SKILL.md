@@ -25,7 +25,7 @@ This skill guides the conversion of Flow SDK activity functions (`activities.ts`
 | Parameters | Individual function arguments | Single typed input object |
 | Return Type | Direct Promise return | outputSchema validation |
 | Imports | Various Flow SDK imports | `@output.ai/core` |
-| LLM Calls | Custom completion functions | `generateText()`, `generateObject()` |
+| LLM Calls | Custom completion functions | `generateText()` with `Output.object()` |
 
 ## Conversion Pattern
 
@@ -58,7 +58,7 @@ export async function analyzeDocument(
 ```typescript
 // steps.ts
 import { z, step } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 import { AnalysisResultSchema, AnalysisResult } from './types.js';
 
 const AnalyzeDocumentInputSchema = z.object( {
@@ -74,16 +74,18 @@ export const analyzeDocument = step( {
   fn: async ( input ) => {
     const { documentText, analysisType, maxLength } = input;
 
-    const { result } = await generateObject<AnalysisResult>( {
+    const { output } = await generateText( {
       prompt: 'analyzeDocument@v1',
       variables: {
         documentText,
         analysisType
       },
-      schema: AnalysisResultSchema
+      output: Output.object( {
+        schema: AnalysisResultSchema
+      } )
     } );
 
-    return result;
+    return output;
   }
 } );
 ```
@@ -340,7 +342,7 @@ Keep schemas and types in `types.ts` for reuse across steps and workflows.
 1. All activities converted to steps
 2. Each step has inputSchema defined
 3. Imports use `@output.ai/core` for z
-4. LLM calls use `generateText()` or `generateObject()`
+4. LLM calls use `generateText()` with `Output.object()` for structured output
 5. File imports have `.js` extension
 
 ## Related Skills

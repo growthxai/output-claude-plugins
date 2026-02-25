@@ -68,7 +68,7 @@ src/
 |------|---------|-----------|
 | Zod import | `import { z } from '@output.ai/core'` | `import { z } from 'zod'` |
 | HTTP client | `import { httpClient } from '@output.ai/http'` | `import axios from 'axios'` |
-| LLM calls | `import { generateText } from '@output.ai/llm'` | Direct provider SDK |
+| LLM calls | `import { generateText, Output } from '@output.ai/llm'` | Direct provider SDK |
 | ES imports | `import { fn } from './file.js'` | `import { fn } from './file'` |
 | Workflow I/O | Call steps for any I/O | Direct fetch/http in workflow |
 
@@ -326,14 +326,16 @@ Provide {{ numberOfPoints | default: 3 }} key insights.
 
 **Using in steps:**
 ```typescript
-import { generateObject, generateText } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 import { z } from '@output.ai/core';
 
 // Structured output
-const { result } = await generateObject({
+const { output } = await generateText({
   prompt: 'analyze@v1',
   variables: { content: 'Article text...', numberOfPoints: 5 },
-  schema: z.object({ insights: z.array(z.string()) })
+  output: Output.object({
+    schema: z.object({ insights: z.array(z.string()) })
+  })
 });
 
 // Text output

@@ -80,7 +80,7 @@ head -10 src/workflows/my_workflow/*.prompt
 
 - [ ] All files import `z` from `@output.ai/core`
 - [ ] `step()` and `workflow()` imported from `@output.ai/core`
-- [ ] LLM calls use `generateText()` or `generateObject()` from `@output.ai/llm`
+- [ ] LLM calls use `generateText()` from `@output.ai/llm` (with `Output.object()` for structured output)
 - [ ] `ValidationError`/`FatalError` imported from `@output.ai/core`
 - [ ] No leftover Flow SDK imports
 

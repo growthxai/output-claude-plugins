@@ -326,7 +326,7 @@ Provide a comprehensive analysis.
 
 ```typescript
 import { step, z } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 import { AnalysisResultSchema, AnalysisResult } from './types.js';
 
 const AnalyzeDocumentInputSchema = z.object( {
@@ -340,17 +340,19 @@ export const analyzeDocument = step( {
   inputSchema: AnalyzeDocumentInputSchema,
   outputSchema: AnalysisResultSchema,
   fn: async ( input ) => {
-    const { result } = await generateObject<AnalysisResult>( {
+    const { output } = await generateText( {
       prompt: 'analyzeDocument@v1',
       variables: {
         documentType: input.documentType,
         content: input.content,
         previousAnalysis: input.previousAnalysis || ''
       },
-      schema: AnalysisResultSchema
+      output: Output.object( {
+        schema: AnalysisResultSchema
+      } )
     } );
 
-    return result;
+    return output;
   }
 } );
 ```
@@ -373,7 +375,7 @@ Examples:
 - [ ] YAML frontmatter includes provider and model
 - [ ] Template syntax converted to Liquid.js
 - [ ] Variable spacing correct: `{{ var }}` not `{{var}}`
-- [ ] Steps use `generateText()` or `generateObject()` with prompt reference
+- [ ] Steps use `generateText()` with prompt reference (use `Output.object()` for structured output)
 - [ ] Prompt file names follow naming convention
 
 ## Related Skills

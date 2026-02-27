@@ -27,6 +27,7 @@ This separation enables automatic retries, resumption, and debugging.
 | **Evaluator** | Quality assessment | Returns confidence-scored results for validation loops |
 | **Scenario** | Test input data | JSON files matching workflow's inputSchema |
 | **Prompt** | LLM templates | Liquid.js templating with YAML frontmatter config |
+| **Eval Test** | Offline quality testing | Dataset-driven verification with `verify()` from `@output.ai/evals` |
 
 ## Project Structure
 
@@ -44,8 +45,14 @@ src/
         ├── utils.ts             # Local utilities (optional)
         ├── prompts/             # LLM templates (optional)
         │   └── generate@v1.prompt
-        └── scenarios/           # Test inputs (optional)
-            └── happy_path.json
+        ├── scenarios/           # Test inputs (optional)
+        │   └── happy_path.json
+        └── tests/               # Offline eval tests (optional)
+            ├── datasets/        # YAML test datasets
+            │   └── happy_path.yml
+            └── evals/           # Eval evaluators and workflow
+                ├── evaluators.ts
+                └── workflow.ts
 ```
 
 ## Code Reuse Rules
@@ -101,7 +108,7 @@ src/
 | `/outputai:build_workflow` | Build/implement workflows | After planning, or for modifications |
 | `/outputai:debug_workflow` | Debug workflow issues | When workflows fail or behave unexpectedly |
 
-### Skills (27)
+### Skills (28)
 
 #### Workflow Operations (5)
 | Skill | Purpose |
@@ -137,7 +144,7 @@ src/
 | `output-meta-post-flight` | Post-operation verification |
 | `output-meta-project-context` | Load full project context (this skill) |
 
-#### Development (9)
+#### Development (10)
 | Skill | Purpose |
 |-------|---------|
 | `output-dev-folder-structure` | Project and workflow directory layout |
@@ -145,6 +152,7 @@ src/
 | `output-dev-step-function` | Writing step functions for I/O |
 | `output-dev-types-file` | Zod schema definitions |
 | `output-dev-evaluator-function` | Quality assessment functions |
+| `output-dev-eval-testing` | Offline eval tests with `@output.ai/evals` |
 | `output-dev-prompt-file` | LLM prompt templates with Liquid.js |
 | `output-dev-scenario-file` | Test input JSON files |
 | `output-dev-http-client-create` | Shared HTTP API client patterns |
@@ -170,6 +178,13 @@ npx output workflow result <id>              # Get async result
 # Debug
 npx output workflow debug <id>               # Debug failed workflow
 npx output workflow debug <id> --format json # Machine-readable output
+
+# Eval Testing
+npx output workflow test <name>              # Run eval tests against datasets
+npx output workflow test <name> --cached     # Use cached output (fast)
+npx output workflow test <name> --save       # Run fresh and save results
+npx output workflow dataset list <name>      # List datasets for a workflow
+npx output workflow dataset generate <name> --input '{}'  # Generate dataset
 ```
 
 ---

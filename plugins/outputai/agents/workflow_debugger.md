@@ -39,6 +39,7 @@ For detailed command usage, Claude will automatically invoke the relevant skill.
 | `npx output workflow result` | Get execution result |
 | `npx output workflow stop` | Stop running workflow |
 | `npx output workflow debug` | Analyze execution trace |
+| `npx output workflow test` | Run offline eval tests against datasets |
 
 ## Temporal UI
 
@@ -65,6 +66,7 @@ Examine the trace for error messages, failed steps, and I/O data.
 ### Step 4: Apply Fix
 Match error symptoms to solutions and verify the fix.
 - **Skills**: `output-error-*` (matched by symptoms)
+- **Skill**: `output-dev-eval-testing` (for offline test evaluation failures)
 
 ## Example Interaction
 

@@ -144,6 +144,7 @@ If the plan includes evaluator functions, implement them in `$3/evaluators.ts`.
   - Include confidence scores (0.0-1.0)
   - Add reasoning for transparency
   - All imports use .js extension
+  - Consider offline eval tests for dataset-driven verification (see `output-dev-eval-testing` skill)
 </implementation_checklist>
 
 <evaluator_template>
@@ -305,6 +306,7 @@ Verify the implementation is complete and correct.
   - Code follows Output SDK patterns
   - TypeScript types are properly defined
   - Scenario file exists with valid example input
+  - Offline eval tests created (if applicable)
 </validation_checklist>
 
 </step>

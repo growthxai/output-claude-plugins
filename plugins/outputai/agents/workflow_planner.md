@@ -75,6 +75,7 @@ Planning quality assessment and validation evaluators.
 - LLM-powered vs. rule-based evaluation
 - Multi-dimensional assessment with dimensions field
 - Feedback generation with EvaluationFeedback
+- Offline eval testing as a complementary approach (see `output-dev-eval-testing` skill for dataset-driven verification with `@output.ai/evals`)
 
 ## Common Skills
 
@@ -91,6 +92,7 @@ Use these skills for detailed implementation patterns. Claude will auto-invoke t
 | `output-dev-http-client-create` | Creating shared HTTP clients in src/clients/ |
 | `output-dev-prompt-file` | Designing .prompt files, Liquid.js templating, LLM configuration |
 | `output-dev-scenario-file` | Creating test scenarios, documenting expected inputs |
+| `output-dev-eval-testing` | Writing offline eval tests, verify() evaluators, dataset YAML files, eval workflows |
 | `output-error-zod-import` | Schema import issues, "incompatible schema" errors |
 | `output-error-direct-io` | Workflow determinism violations, I/O in workflow fn |
 | `output-error-try-catch` | Error handling antipatterns, proper FatalError/ValidationError usage |

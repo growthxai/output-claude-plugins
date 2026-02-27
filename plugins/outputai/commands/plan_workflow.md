@@ -158,6 +158,7 @@ Determine if the workflow requires quality assessment, validation, or content ev
   3. Would the workflow benefit from confidence-scored validation?
   4. What evaluation result types are appropriate (boolean/number/string)?
   5. Should evaluators use simple logic or LLM-powered assessment?
+  6. Would offline eval testing with `@output.ai/evals` be appropriate for dataset-driven verification?
 </thought_process>
 
 <step_output>
@@ -224,6 +225,8 @@ Design the testing strategy for the workflow.
   2. How can I run the workflow?
   3. What cases do we need to validate?
   4. What scenario files should be created?
+  5. Should we create eval datasets for offline testing with `output workflow test`?
+  6. What ground truth values are needed for eval datasets?
 </thought_process>
 
 <step_output>

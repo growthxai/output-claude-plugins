@@ -106,7 +106,7 @@ import axios from 'axios';
 
 ```typescript
 // CORRECT - Use @output.ai/llm wrapper
-import { generateText, generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 // WRONG - Never call LLM providers directly
 import OpenAI from 'openai';
@@ -130,7 +130,7 @@ import { InputSchema, OutputSchema } from './types';
 ```typescript
 import { step, z, FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 import { StepInputSchema, StepOutputSchema } from './types.js';
 
@@ -249,10 +249,10 @@ const contentType = response.headers.get('content-type');
 
 ## LLM Operations
 
-### Using generateObject
+### Using generateText with Output.object()
 
 ```typescript
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 export const analyzeContent = step({
   name: 'analyzeContent',
@@ -260,17 +260,19 @@ export const analyzeContent = step({
   inputSchema: z.object({ content: z.string() }),
   outputSchema: z.object({ analysis: z.string() }),
   fn: async ({ content }) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'analyzeContent@v1',  // References prompts/analyzeContent@v1.prompt
       variables: {
         content
       },
-      schema: z.object({
-        analysis: z.string()
+      output: Output.object({
+        schema: z.object({
+          analysis: z.string()
+        })
       })
     });
 
-    return { analysis: result.analysis };
+    return { analysis: output.analysis };
   }
 });
 ```
@@ -367,7 +369,7 @@ Based on a real workflow step:
 ```typescript
 import { step, z, FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 import { GeminiImageService } from '../../shared/clients/gemini_client.js';
 import {
@@ -408,7 +410,7 @@ export const generateImageIdeas = step({
   inputSchema: GenerateImageIdeasInputSchema,
   outputSchema: z.array(z.string()),
   fn: async ({ content, numberOfIdeas, colorPalette, artDirection }) => {
-    const response = await generateObject({
+    const { output } = await generateText({
       prompt: 'generateImageIdeas@v1',
       variables: {
         content,
@@ -416,10 +418,12 @@ export const generateImageIdeas = step({
         colorPalette: colorPalette || '',
         artDirection: artDirection || ''
       },
-      schema: ImageIdeasSchema
+      output: Output.object({
+        schema: ImageIdeasSchema
+      })
     });
 
-    return response.ideas;
+    return output.ideas;
   }
 });
 
@@ -524,7 +528,8 @@ fn: async (input) => {
 
 - [ ] `step`, `z`, `FatalError`, `ValidationError` imported from `@output.ai/core`
 - [ ] `httpClient` imported from `@output.ai/http` (not axios)
-- [ ] `generateText`/`generateObject` imported from `@output.ai/llm` (not direct provider)
+- [ ] `generateText` and `Output` imported from `@output.ai/llm` (not direct provider)
+- [ ] Structured output uses `Output.object()` with `.describe()` (not `.min()/.max()`) on number schemas
 - [ ] All imports use `.js` extension
 - [ ] Named exports used for each step
 - [ ] Each step has `name`, `description`, `inputSchema`, `outputSchema`, `fn`

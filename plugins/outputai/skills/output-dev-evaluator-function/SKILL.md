@@ -102,7 +102,7 @@ import { z } from 'zod';
 
 ```typescript
 // CORRECT - Use @output.ai/llm wrapper
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 // WRONG - Never call LLM providers directly
 import OpenAI from 'openai';
@@ -354,11 +354,11 @@ export const evaluateSentiment = evaluator({
 
 ## LLM-Powered Evaluator Examples
 
-### Using generateObject for Evaluation
+### Using generateText with Output.object() for Evaluation
 
 ```typescript
 import { evaluator, z, EvaluationNumberResult } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 export const evaluateSignalToNoise = evaluator({
   name: 'evaluate_signal_to_noise',
@@ -368,19 +368,21 @@ export const evaluateSignalToNoise = evaluator({
     content: z.string()
   }),
   fn: async ({ title, content }) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'signal_noise@v1',  // References prompts/signal_noise@v1.prompt
       variables: {
         title,
         content
       },
-      schema: z.object({
-        score: z.number().min(0).max(100).describe('Signal-to-noise score 0-100')
+      output: Output.object({
+        schema: z.object({
+          score: z.number().describe('Signal-to-noise score 0-100')
+        })
       })
     });
 
     return new EvaluationNumberResult({
-      value: result.score,
+      value: output.score,
       confidence: 0.85
     });
   }
@@ -391,7 +393,7 @@ export const evaluateSignalToNoise = evaluator({
 
 ```typescript
 import { evaluator, z, EvaluationBooleanResult } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 export const evaluateFactualAccuracy = evaluator({
   name: 'evaluate_factual_accuracy',
@@ -401,21 +403,23 @@ export const evaluateFactualAccuracy = evaluator({
     topic: z.string()
   }),
   fn: async ({ content, topic }) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'factual_check@v1',
       variables: { content, topic },
-      schema: z.object({
-        isFactual: z.boolean().describe('Whether content appears factually accurate'),
-        confidence: z.number().min(0).max(1).describe('Confidence in assessment'),
-        issues: z.array(z.string()).optional().describe('Any factual issues found')
+      output: Output.object({
+        schema: z.object({
+          isFactual: z.boolean().describe('Whether content appears factually accurate'),
+          confidence: z.number().describe('Confidence in assessment 0-1'),
+          issues: z.array(z.string()).optional().describe('Any factual issues found')
+        })
       })
     });
 
     return new EvaluationBooleanResult({
-      value: result.isFactual,
-      confidence: result.confidence,
-      reasoning: result.issues?.length
-        ? `Issues found: ${result.issues.join(', ')}`
+      value: output.isFactual,
+      confidence: output.confidence,
+      reasoning: output.issues?.length
+        ? `Issues found: ${output.issues.join(', ')}`
         : 'No factual issues detected'
     });
   }
@@ -426,7 +430,7 @@ export const evaluateFactualAccuracy = evaluator({
 
 ```typescript
 import { evaluator, z, EvaluationStringResult } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 export const evaluateContentCategory = evaluator({
   name: 'evaluate_content_category',
@@ -436,23 +440,25 @@ export const evaluateContentCategory = evaluator({
     categories: z.array(z.string())
   }),
   fn: async ({ content, categories }) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'categorize_content@v1',
       variables: {
         content,
         categories: categories.join(', ')
       },
-      schema: z.object({
-        category: z.string().describe('The best matching category'),
-        confidence: z.number().min(0).max(1).describe('Confidence in classification'),
-        explanation: z.string().describe('Why this category was chosen')
+      output: Output.object({
+        schema: z.object({
+          category: z.string().describe('The best matching category'),
+          confidence: z.number().describe('Confidence in classification 0-1'),
+          explanation: z.string().describe('Why this category was chosen')
+        })
       })
     });
 
     return new EvaluationStringResult({
-      value: result.category,
-      confidence: result.confidence,
-      reasoning: result.explanation
+      value: output.category,
+      confidence: output.confidence,
+      reasoning: output.explanation
     });
   }
 });
@@ -539,16 +545,9 @@ Based on a real workflow evaluator file:
 
 ```typescript
 import { evaluator, z, EvaluationBooleanResult, EvaluationNumberResult } from '@output.ai/core';
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
+import { blogContentSchema } from './types.js';
 import type { BlogContent, QualityMetrics } from './types.js';
-
-// Schema for blog content input
-const blogContentSchema = z.object({
-  title: z.string(),
-  url: z.string(),
-  content: z.string(),
-  tokenCount: z.number()
-});
 
 // Simple boolean evaluator
 export const evaluateMinimumLength = evaluator({
@@ -573,19 +572,21 @@ export const evaluateSignalToNoise = evaluator({
   description: 'Evaluate the signal-to-noise ratio of blog content',
   inputSchema: blogContentSchema,
   fn: async (input: BlogContent) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'signal_noise@v1',
       variables: {
         title: input.title,
         content: input.content
       },
-      schema: z.object({
-        score: z.number().min(0).max(100).describe('Signal-to-noise score 0-100')
+      output: Output.object({
+        schema: z.object({
+          score: z.number().describe('Signal-to-noise score 0-100')
+        })
       })
     });
 
     return new EvaluationNumberResult({
-      value: result.score,
+      value: output.score,
       confidence: 0.85
     });
   }
@@ -601,20 +602,22 @@ export const evaluateRelevance = evaluator({
     keywords: z.array(z.string())
   }),
   fn: async ({ content, topic, keywords }) => {
-    const { result } = await generateObject({
+    const { output } = await generateText({
       prompt: 'relevance_check@v1',
       variables: { content, topic, keywords: keywords.join(', ') },
-      schema: z.object({
-        isRelevant: z.boolean(),
-        relevanceScore: z.number().min(0).max(1),
-        explanation: z.string()
+      output: Output.object({
+        schema: z.object({
+          isRelevant: z.boolean(),
+          relevanceScore: z.number().describe('Relevance score 0-1'),
+          explanation: z.string()
+        })
       })
     });
 
     return new EvaluationBooleanResult({
-      value: result.isRelevant,
-      confidence: result.relevanceScore,
-      reasoning: result.explanation
+      value: output.isRelevant,
+      confidence: output.relevanceScore,
+      reasoning: output.explanation
     });
   }
 });
@@ -708,7 +711,8 @@ dimensions: [
 ## Verification Checklist
 
 - [ ] `evaluator`, `z`, result types imported from `@output.ai/core`
-- [ ] `generateObject` imported from `@output.ai/llm` if using LLM (not direct provider)
+- [ ] `generateText` and `Output` imported from `@output.ai/llm` if using LLM (not direct provider)
+- [ ] LLM output schemas use `.describe()` instead of `.min()/.max()` on `z.number()`
 - [ ] All imports use `.js` extension
 - [ ] Named exports used for each evaluator
 - [ ] Each evaluator has `name`, `description`, `inputSchema`, `fn`

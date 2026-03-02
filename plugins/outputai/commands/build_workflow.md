@@ -138,7 +138,7 @@ If the plan includes evaluator functions, implement them in `$3/evaluators.ts`.
 
 <implementation_checklist>
   - Import required dependencies (evaluator, z, result types from '@output.ai/core')
-  - Import generateObject from '@output.ai/llm' if using LLM-powered evaluators
+  - Import generateText and Output from '@output.ai/llm' if using LLM-powered evaluators
   - Implement each evaluator with proper schema validation
   - Use appropriate result types (EvaluationBooleanResult, EvaluationNumberResult, EvaluationStringResult)
   - Include confidence scores (0.0-1.0)

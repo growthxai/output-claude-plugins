@@ -284,13 +284,13 @@ Focus on the most important concepts that would benefit from visual explanation.
 
 ## Using Prompts in Steps
 
-### With generateObject
+### With generateText and Output.object()
 
 ```typescript
-import { generateObject } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 import { z } from '@output.ai/core';
 
-const { result } = await generateObject({
+const { output } = await generateText({
   prompt: 'generateImageIdeas@v1',  // References prompts/generateImageIdeas@v1.prompt
   variables: {
     content: 'Solar panel technology explained...',
@@ -298,11 +298,13 @@ const { result } = await generateObject({
     colorPalette: 'blue and green tones',
     artDirection: 'minimalist style'
   },
-  schema: z.object({
-    ideas: z.array(z.string())
+  output: Output.object({
+    schema: z.object({
+      ideas: z.array(z.string())
+    })
   })
 });
-// result contains { ideas: [...] }
+// output contains { ideas: [...] }
 ```
 
 ### With generateText

@@ -123,7 +123,7 @@ const result = await client.post('endpoint', { json: payload }).json();
 
 Never call LLM APIs directly. Use `@output.ai/llm`:
 ```typescript
-import { generateText, generateObject, generateArray, generateEnum } from '@output.ai/llm';
+import { generateText, Output } from '@output.ai/llm';
 
 // Text generation
 const { result: text } = await generateText({
@@ -132,10 +132,12 @@ const { result: text } = await generateText({
 });
 
 // Structured output
-const { result: data } = await generateObject({
+const { output: data } = await generateText({
   prompt: 'prompts/extract@v1',
   variables: { text },
-  schema: z.object({ title: z.string(), summary: z.string() })
+  output: Output.object({
+    schema: z.object({ title: z.string(), summary: z.string() })
+  })
 });
 ```
 

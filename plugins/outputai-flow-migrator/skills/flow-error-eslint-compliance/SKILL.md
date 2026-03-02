@@ -93,16 +93,19 @@ Break long lines to stay under 150 characters.
 
 ```typescript
 // WRONG
-const result = await generateObject( { prompt: 'analyze@v1', variables: { topic: input.topic, context: input.context, additionalInfo: input.additionalInfo } } );
+const { output } = await generateText( { prompt: 'analyze@v1', variables: { topic: input.topic, context: input.context, additionalInfo: input.additionalInfo }, output: Output.object( { schema: z.object( { result: z.string() } ) } ) } );
 
 // CORRECT
-const result = await generateObject( {
+const { output } = await generateText( {
   prompt: 'analyze@v1',
   variables: {
     topic: input.topic,
     context: input.context,
     additionalInfo: input.additionalInfo
-  }
+  },
+  output: Output.object( {
+    schema: z.object( { result: z.string() } )
+  } )
 } );
 ```
 

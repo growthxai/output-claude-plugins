@@ -32,6 +32,12 @@ This separation enables automatic retries, resumption, and debugging.
 ## Project Structure
 
 ```
+config/
+├── credentials.yml.enc          # Global encrypted credentials
+├── credentials.key              # Global decryption key (DO NOT COMMIT)
+└── credentials/                 # Environment-specific credentials
+    ├── production.yml.enc
+    └── production.key
 src/
 ├── shared/                      # Shared code across workflows
 │   ├── clients/                 # API clients (e.g., jina.ts, stripe.ts)
@@ -43,6 +49,7 @@ src/
         ├── types.ts             # Zod schemas (input, output, internal)
         ├── evaluators.ts        # Quality checks (optional)
         ├── utils.ts             # Local utilities (optional)
+        ├── credentials.yml.enc  # Workflow-specific credentials (optional)
         ├── prompts/             # LLM templates (optional)
         │   └── generate@v1.prompt
         ├── scenarios/           # Test inputs (optional)
@@ -75,6 +82,7 @@ src/
 |------|---------|-----------|
 | Zod import | `import { z } from '@output.ai/core'` | `import { z } from 'zod'` |
 | HTTP client | `import { httpClient } from '@output.ai/http'` | `import axios from 'axios'` |
+| Credentials | `import { credentials } from '@output.ai/credentials'` | `process.env.SECRET` |
 | LLM calls | `import { generateText, Output } from '@output.ai/llm'` | Direct provider SDK |
 | ES imports | `import { fn } from './file.js'` | `import { fn } from './file'` |
 | Workflow I/O | Call steps for any I/O | Direct fetch/http in workflow |
@@ -108,7 +116,7 @@ src/
 | `/outputai:build_workflow` | Build/implement workflows | After planning, or for modifications |
 | `/outputai:debug_workflow` | Debug workflow issues | When workflows fail or behave unexpectedly |
 
-### Skills (28)
+### Skills (29)
 
 #### Workflow Operations (5)
 | Skill | Purpose |
@@ -144,7 +152,7 @@ src/
 | `output-meta-post-flight` | Post-operation verification |
 | `output-meta-project-context` | Load full project context (this skill) |
 
-#### Development (10)
+#### Development (11)
 | Skill | Purpose |
 |-------|---------|
 | `output-dev-folder-structure` | Project and workflow directory layout |
@@ -156,6 +164,7 @@ src/
 | `output-dev-prompt-file` | LLM prompt templates with Liquid.js |
 | `output-dev-scenario-file` | Test input JSON files |
 | `output-dev-http-client-create` | Shared HTTP API client patterns |
+| `output-dev-credentials` | Encrypted secrets management with `@output.ai/credentials` |
 | `output-dev-create-skeleton` | Generate workflow skeleton |
 
 ---
@@ -185,6 +194,12 @@ npx output workflow test <name> --cached     # Use cached output (fast)
 npx output workflow test <name> --save       # Run fresh and save results
 npx output workflow dataset list <name>      # List datasets for a workflow
 npx output workflow dataset generate <name> --input '{}'  # Generate dataset
+
+# Credentials
+output credentials init                      # Initialize encrypted credentials
+output credentials edit                      # Edit credentials (decrypts, opens $EDITOR)
+output credentials show                      # Show decrypted credentials
+output credentials get <path>                # Get single credential value
 ```
 
 ---
@@ -252,8 +267,9 @@ Clients live in `src/shared/clients/` and are shared across all workflows.
 // src/shared/clients/example.ts
 import { FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
+import { credentials } from '@output.ai/credentials';
 
-const API_KEY = process.env.EXAMPLE_API_KEY || '';
+const API_KEY = credentials.require('example.api_key');
 
 const client = httpClient({
   prefixUrl: 'https://api.example.com',
@@ -263,7 +279,6 @@ const client = httpClient({
 });
 
 export async function fetchFromExample(query: string): Promise<ExampleResponse> {
-  if (!API_KEY) throw new FatalError('EXAMPLE_API_KEY not set');
 
   try {
     const response = await client.get('endpoint', { searchParams: { q: query } });

@@ -296,3 +296,4 @@ After migrating to httpClient:
 
 - For I/O in workflow functions, see `output-error-direct-io`
 - For connection issues, see `output-services-check`
+- For encrypted secrets management, see `output-dev-credentials`

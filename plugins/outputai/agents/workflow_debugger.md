@@ -67,6 +67,7 @@ Examine the trace for error messages, failed steps, and I/O data.
 Match error symptoms to solutions and verify the fix.
 - **Skills**: `output-error-*` (matched by symptoms)
 - **Skill**: `output-dev-eval-testing` (for offline test evaluation failures)
+- **Skill**: `output-dev-credentials` (for `MissingCredentialError` or `MissingKeyError`)
 
 ## Example Interaction
 
@@ -95,6 +96,16 @@ import { z } from '@output.ai/core';
 ```
 
 After making this change, run the workflow again with `npx output workflow run <workflowName>` to verify the fix.
+
+**User**: "The trace shows MissingCredentialError for 'stripe.api_key'."
+
+**Agent**: This means the credential hasn't been added to your encrypted credentials file. Fix it by:
+
+1. Initialize credentials if not done: `output credentials init`
+2. Add the credential: `output credentials edit` (adds `stripe.api_key` to the YAML)
+3. Verify it's accessible: `output credentials get stripe.api_key`
+
+If you see `MissingKeyError` instead, set the `OUTPUT_CREDENTIALS_KEY` environment variable or create a `config/credentials.key` file.
 
 ---
 *This agent specializes in debugging Output SDK workflows in local development environments.*

@@ -44,6 +44,7 @@ Designing Output SDK workflow architecture and structure.
 Planning step functions that handle all I/O operations.
 
 - HTTP client integrations using `@output.ai/http`
+- Credentials management using `@output.ai/credentials`
 - LLM operations using `@output.ai/llm`
 - Error handling with FatalError and ValidationError
 - Retry strategies and timeout configurations
@@ -90,6 +91,7 @@ Use these skills for detailed implementation patterns. Claude will auto-invoke t
 | `output-dev-step-function` | Writing steps.ts, implementing I/O operations, error handling |
 | `output-dev-evaluator-function` | Writing evaluators.ts, implementing quality assessment, validation logic |
 | `output-dev-http-client-create` | Creating shared HTTP clients in src/clients/ |
+| `output-dev-credentials` | Encrypted secrets management for API keys, tokens, passwords |
 | `output-dev-prompt-file` | Designing .prompt files, Liquid.js templating, LLM configuration |
 | `output-dev-scenario-file` | Creating test scenarios, documenting expected inputs |
 | `output-dev-eval-testing` | Writing offline eval tests, verify() evaluators, dataset YAML files, eval workflows |

@@ -44,6 +44,16 @@ import { z } from 'zod';
 import { z } from '@output.ai/core';
 ```
 
+**CRITICAL**: Always use `@output.ai/credentials` for secrets, NEVER `process.env`:
+```typescript
+// Wrong
+const apiKey = process.env.SERVICE_API_KEY;
+
+// Correct
+import { credentials } from '@output.ai/credentials';
+const apiKey = credentials.require('service.api_key');
+```
+
 ### Workflow Determinism
 
 Workflows must be deterministic. They can ONLY:
@@ -233,6 +243,9 @@ Don't wrap step calls in try-catch. Let failures propagate for proper retry hand
 
 ### 5. Missing Schemas
 Always define inputSchema and outputSchema for type safety and validation.
+
+### 6. Credentials Usage
+Never use `process.env` for secrets. Use `credentials.require()` from `@output.ai/credentials` for mandatory secrets and `credentials.get()` with a default for optional values. See `output-dev-credentials` skill for setup and migration guidance.
 
 ## Evaluator Quality Checks
 

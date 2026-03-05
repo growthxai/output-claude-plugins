@@ -44,6 +44,11 @@ You are a specialized information retrieval agent for Output SDK workflows. Your
 - `src/shared/steps/*.ts` - Shared step definitions (optional)
 - `src/shared/evaluators/*.ts` - Shared evaluator definitions (optional)
 
+### Credentials
+- `config/credentials.yml.enc` - Global encrypted credentials
+- `config/credentials/{env}.yml.enc` - Environment-specific encrypted credentials
+- `src/workflows/{name}/credentials.yml.enc` - Per-workflow encrypted credentials
+
 ## Workflow
 
 1. Check if the requested information appears to be in context already

@@ -77,6 +77,17 @@ import { FatalError, ValidationError } from '@output.ai/core';
 class MyCustomError extends Error { ... }
 ```
 
+### Credentials Import
+
+```typescript
+// CORRECT - Use @output.ai/credentials for secrets
+import { credentials } from '@output.ai/credentials';
+const apiKey = credentials.require('service.api_key');
+
+// WRONG - Never use process.env for secrets
+const apiKey = process.env.SERVICE_API_KEY;
+```
+
 ## Basic Client Structure
 
 ### Simple Function-Based Client
@@ -84,8 +95,9 @@ class MyCustomError extends Error { ... }
 ```typescript
 import { FatalError, ValidationError } from '@output.ai/core';
 import { httpClient } from '@output.ai/http';
+import { credentials } from '@output.ai/credentials';
 
-const API_KEY = process.env.SERVICE_API_KEY || '';
+const API_KEY = credentials.require('service.api_key');
 const BASE_URL = 'https://api.service.com';
 
 const serviceClient = httpClient({
@@ -139,17 +151,13 @@ export class ServiceClient {
   private readonly client: ReturnType<typeof httpClient>;
   private readonly model: string;
 
-  constructor(apiKey = process.env.SERVICE_API_KEY) {
-    if (!apiKey) {
-      throw new FatalError(
-        'ServiceClient: No API Key provided (SERVICE_API_KEY)'
-      );
-    }
+  constructor(apiKey?: string) {
+    const key = apiKey ?? credentials.require('service.api_key');
 
     this.client = httpClient({
       prefixUrl: 'https://api.service.com',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${key}`,
         'Content-Type': 'application/json'
       },
       timeout: 30000,
@@ -401,15 +409,18 @@ const client = httpClient({
 
 ## Best Practices
 
-### 1. Validate API Keys Early
+### 1. Use Credentials for API Keys
+
+Prefer `@output.ai/credentials` over `process.env` for secrets management. See `output-dev-credentials` skill for details.
 
 ```typescript
-constructor(apiKey = process.env.API_KEY) {
-  if (!apiKey) {
-    throw new FatalError('API_KEY environment variable not set');
-  }
-  // ...
-}
+import { credentials } from '@output.ai/credentials';
+
+// credentials.require() throws MissingCredentialError if not found
+const apiKey = credentials.require('service.api_key');
+
+// credentials.get() returns undefined or default if not found
+const region = credentials.get('aws.region', 'us-east-1');
 ```
 
 ### 2. Document Functions with JSDoc
@@ -474,5 +485,6 @@ export interface ServiceResponse {
 - `output-dev-step-function` - Using clients in step functions
 - `output-dev-evaluator-function` - Using clients in evaluators
 - `output-dev-folder-structure` - Understanding project layout
+- `output-dev-credentials` - Encrypted secrets management
 - `output-error-http-client` - Troubleshooting HTTP issues
 - `output-error-try-catch` - Proper error handling patterns

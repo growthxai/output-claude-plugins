@@ -67,11 +67,11 @@ import { stepName } from './steps.js';
 ```
 
 ### HTTP and LLM Clients
-- Never use `axios` directly - use `@output.ai/http` wrapper
-- Never make direct LLM calls - use `@output.ai/llm` wrapper with `generateText`
+- Never use `axios` directly - use `@outputai/http` wrapper
+- Never make direct LLM calls - use `@outputai/llm` wrapper with `generateText`
 - For structured LLM output, use `generateText` with `Output.object()`:
   ```typescript
-  import { generateText, Output } from '@output.ai/llm';
+  import { generateText, Output } from '@outputai/llm';
   const { output } = await generateText({
     prompt: 'analyze@v1',
     variables: { content },
@@ -91,7 +91,7 @@ import { stepName } from './steps.js';
 
 ### Workflow Structure
 ```typescript
-import { workflow, z } from '@output.ai/core';
+import { workflow, z } from '@outputai/core';
 import { stepName } from './steps.js';
 
 const inputSchema = z.object({ /* ... */ });
